@@ -1,24 +1,24 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "rootDir": "./src",
     "baseUrl": "./",
     "outDir": "./build",
-    "declaration": true,
     "paths": {
       "src/*": ["./src/*"]
     },
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["./typings", "../../node_modules/@types"],
     "types": [
       "node",
       "jest",
-      "@types/jest",
-      "./typings/express-enrouten",
-      "./typings/terser-webpack-plugin/",
-      "./typings/webpack-dev-middleware/",
-      "./typings//webpack-hot-middleware/",
-      "./typings/webpack-manifest-plugin/",
-      "./typings/webpack-node-externals/"
+      "express-enrouten",
+      "terser-webpack-plugin",
+      "webpack-dev-middleware",
+      "webpack-hot-middleware",
+      "webpack-manifest-plugin",
+      "webpack-node-externals"
     ]
   },
   "ts-node": {

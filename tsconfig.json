@@ -1,15 +1,8 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
     "module": "CommonJS",
-    "declaration": true,
-    "lib": ["ES6", "DOM"],
-    "strict": true,
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types", "node_modules/@dhruv-m-patel"],
-    "types": ["node", "jest"]
-  }
+    "moduleResolution": "Node"
+  },
+  "include": []
 }

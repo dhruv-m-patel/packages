@@ -118,8 +118,8 @@ Replaces Lerna with Turbo. Bumps Prettier. **Does NOT touch ESLint config or `.e
 
 - [x] `yarn install` clean (peer-dep warnings expected; `eslint-config-*` packages still on legacy ESLint 8 until Phase 2)
 - [x] `yarn turbo run lint` exits 0 against legacy `.eslintrc` (untouched in this phase)
-- [~] `yarn turbo run typecheck` exits 0 (deferred to Phase 3: requires `tsconfig.base.json` rebase. Root TS bumped to 5.7.3 inside this phase to unblock phase-3; per-package tsconfigs still extend old root and reference legacy `types: [jest]` arrays.)
-- [~] `yarn turbo run build` builds every package successfully (deferred to Phase 3 for same reason.)
+- [x] `yarn turbo run typecheck` exits 0 (verified in Phase 3 after `tsconfig.base.json` rebase)
+- [x] `yarn turbo run build` builds every package successfully (verified in Phase 3)
 
 ### Explicitly NOT in this phase (moved to Phase 2)
 
@@ -215,20 +215,22 @@ Commit subject: `refactor(phase-2): workspace-owned eslint flat config (rename c
 
 Standardize on upstream's `tsconfig.base.json` pattern so cloned packages drop in cleanly.
 
-- [ ] Create `tsconfig.base.json` at repo root: TS 5.7 settings, `target: ES2022`, `module: nodenext`, `moduleResolution: nodenext`, `strict: true`, `lib: [ES2022, DOM]`, `verbatimModuleSyntax: true`, `noUncheckedIndexedAccess: true`, `esModuleInterop: true`, `skipLibCheck: true`, `forceConsistentCasingInFileNames: true`, `declaration: true`
-- [ ] Rewrite root `tsconfig.json` to thin `extends: ./tsconfig.base.json` + `include: []` (or delete it)
-- [ ] Bump root `typescript` devDep `4.3.4` → `^5.7.3`
-- [ ] `packages/express-app/tsconfig.json`: extend `../../tsconfig.base.json`, drop inherited settings
-- [ ] `packages/web-app/tsconfig.json`: same
-- [ ] `packages/react-components/tsconfig.json`: same, keep React-specific overrides (`jsx`)
-- [ ] `packages/react-hooks/tsconfig.json`: same, keep React-specific overrides
-- [ ] `packages/eslint-config-core/package.json` + `eslint-config-web/package.json`: bump `typescript` devDep if pinned
-- [ ] `boilerplates/node-package/tsconfig.json`: rebase
-- [ ] `boilerplates/react-package/tsconfig.json`: rebase
+- [x] Create `tsconfig.base.json` at repo root: TS 5.7 settings, `target: ES2022`, `strict: true`, `lib: [ES2022, DOM]`, `esModuleInterop: true`, `skipLibCheck: true`, `forceConsistentCasingInFileNames: true`, `declaration: true`, `declarationMap: true`, `sourceMap: true`, `resolveJsonModule: true`. Note: `module`/`moduleResolution` left to per-package configs (current packages use CJS dual-build until phases 4-7 replace with NodeNext + Vite). `verbatimModuleSyntax`/`noUncheckedIndexedAccess`/`isolatedModules` deferred to per-package overrides where upstream sets them.
+- [x] Rewrite root `tsconfig.json` to thin `extends: ./tsconfig.base.json` + `include: []`
+- [x] Root `typescript` already at `^5.7.3` (bumped in phase 1)
+- [x] `packages/express-app/tsconfig.json`: extend `../../tsconfig.base.json`, drop inherited settings
+- [x] `packages/web-app/tsconfig.json`: same; widen `typeRoots` to include root `node_modules/@types`
+- [x] `packages/react-components/tsconfig.json`: same, keep `jsx: react`
+- [x] `packages/react-hooks/tsconfig.json`: same, keep `jsx: react`
+- [~] `packages/eslint-config-core/package.json` + `eslint-config-web/package.json`: skipped — pure JS, no `typescript` devDep to bump
+- [~] `boilerplates/node-package/tsconfig.json`: deferred to Phase 8 (boilerplates not in workspaces)
+- [~] `boilerplates/react-package/tsconfig.json`: deferred to Phase 8
 
 ### Verify
 
-- [ ] `yarn turbo run typecheck` passes (use narrow `// @ts-expect-error` for soon-to-be-deleted code in `web-app` Webpack typings, current `express-app` validators, current `react-components` MUI — these get replaced in later phases)
+- [x] `yarn turbo run typecheck` passes (narrow fix in `web-app/src/index.ts`: `export type { ExtendedRequest }`)
+- [x] `yarn turbo run build` passes (4 packages, all CJS dual outputs intact)
+- [x] `yarn turbo run lint` 0 errors
 
 🔖 **CHECKPOINT 3 — COMMIT NOW**
 

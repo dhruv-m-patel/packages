@@ -9,6 +9,12 @@ This doc is filled in incrementally as each phase lands. The full plan lives at 
 - Node: `>=22` (was `>=18`). Use `.nvmrc` (`22.13.1`).
 - Yarn: `4.x` (was `3.x`). `corepack enable` then `yarn install`.
 
+## Shared TypeScript base (`tsconfig.base.json`)
+
+Repo root now ships a `tsconfig.base.json` mirroring upstream's pattern. All per-package `tsconfig.json` files extend it via `"extends": "../../tsconfig.base.json"`. Root `tsconfig.json` is a thin `extends` with `include: []`.
+
+Base sets: `target: ES2022`, `lib: [ES2022, DOM]`, `strict: true`, `esModuleInterop`, `skipLibCheck`, `forceConsistentCasingInFileNames`, `declaration`, `declarationMap`, `sourceMap`, `resolveJsonModule`. Per-package configs choose their own `module`/`moduleResolution` (current packages stay on `CommonJS`/`Node` for the dual-build; phases 4-7 packages cloned from upstream switch to `NodeNext`).
+
 ## `@dhruv-m-patel/eslint-config-core` (new package)
 
 Replaces `@dhruv-m-patel/eslint-config-base`. **Hard rename** — old name receives no further releases.
