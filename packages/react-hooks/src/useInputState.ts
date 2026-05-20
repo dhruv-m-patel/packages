@@ -20,7 +20,7 @@ export default function useInputState(
 ): [
   string,
   ChangeEventHandler<HTMLInputElement>,
-  Dispatch<SetStateAction<string>>
+  Dispatch<SetStateAction<string>>,
 ] {
   const [value, setValue] = useState<string>(initialState);
   const handleInputCallback = useCallback(

@@ -35,16 +35,17 @@ Old eslint config package names (`eslint-config-base`, `eslint-config-react`) ar
 
 **These rules are binding. Do not skip steps because the user did not remind you.**
 
-1. **Update this file BEFORE every commit.** When you finish any checklist item, edit this file to flip `- [ ]` → `- [x]` *in the same change set as the code change*. Stage the doc edit together with the code edit. Never commit code without flipping the corresponding boxes.
+1. **Update this file BEFORE every commit.** When you finish any checklist item, edit this file to flip `- [ ]` → `- [x]` _in the same change set as the code change_. Stage the doc edit together with the code edit. Never commit code without flipping the corresponding boxes.
 2. **Commit at every checkpoint.** Each phase has explicit `🔖 CHECKPOINT — COMMIT NOW` markers. When you reach one, immediately:
    1. Flip every `- [ ]` you completed since the last checkpoint to `- [x]`.
    2. Run the verification commands listed under that checkpoint. Do not commit if any fail.
    3. Stage the changed files (including this plan file) and create one commit using the suggested commit message format.
    4. Do **not** ask the user for permission to commit — committing at checkpoints is pre-authorized by this plan. (User's global rule about not pushing still applies — do not `git push`.)
-3. **One phase per branch, one PR per phase.** Each phase opens its own PR + changeset. Do not bundle phases.
+3. **All work lands on `dhruv/upgrade`.** This is a SINGLE-BRANCH effort. Do NOT create per-phase branches like `chore/phase-X-foo`. Stay on `dhruv/upgrade` from the very first edit through the final phase. One commit per checkpoint, all on this branch.
 4. **If a verification fails:** fix the failure first, then commit. Never flip a checkbox you did not actually verify.
 5. **If a step is blocked or skipped:** annotate it inline in this file as `- [~] (skipped: reason)` rather than leaving it unchecked or silently dropping it.
 6. **Resume rule.** When starting a new session, read this file top-to-bottom and find the first unchecked box. That is your next action. Do not re-plan.
+7. **Workspace packages own their domain.** Lint rules live in `@dhruv-m-patel/eslint-config-core` / `eslint-config-web`. TypeScript base lives in `tsconfig.base.json` consumed by per-package tsconfigs. Root files (`eslint.config.js`, `tsconfig.json`) MUST be thin re-exports / `extends`. Never inline rules at the root or in a consumer package — that defeats the entire reason these workspace packages exist.
 
 Commit message format for checkpoints:
 
@@ -63,7 +64,7 @@ Refs: docs/MODERNIZATION_PLAN.md
 
 ## Phase 0 — Prep & guardrails
 
-Land first; everything else depends on it. Branch: `chore/phase-0-runtime-bump`.
+Land first; everything else depends on it.
 
 - [x] Bump `.nvmrc` from `18.19.0` → `22.13.1`
 - [x] `package.json` root: `engines.node` `>=18` → `>=22`
@@ -78,6 +79,7 @@ Land first; everything else depends on it. Branch: `chore/phase-0-runtime-bump`.
 🔖 **CHECKPOINT 0 — COMMIT NOW**
 
 Verification before commit:
+
 ```bash
 node -v && yarn --version
 yarn install
@@ -87,76 +89,110 @@ Commit subject: `chore(phase-0): bump runtime to node 22 + yarn 4`
 
 ---
 
-## Phase 1 — Tooling foundation: Turbo + ESLint 9 flat + Prettier 3
+## Phase 1 — Tooling foundation: Turbo + Prettier 3 (NO root ESLint changes yet)
 
-Branch: `chore/phase-1-tooling`. Replaces Lerna with Turbo. Replaces `.eslintrc` with flat config.
+Replaces Lerna with Turbo. Bumps Prettier. **Does NOT touch ESLint config or `.eslintrc`** — that work lives entirely in Phase 2 because the workspace `eslint-config-*` package is the canonical owner of lint rules; introducing a root `eslint.config.js` here would duplicate or pre-empt that ownership.
 
 ### Add
 
-- [ ] Create `turbo.json` at repo root with pipelines: `build` (deps `^build`), `test`, `test:ci`, `lint`, `typecheck`, `clean`, `storybook`, `build-storybook`, `dev`
-- [ ] Create `eslint.config.js` at repo root (flat config). Migrate ignore patterns from `.eslintignore` into the `ignores` block
-- [ ] Bump `prettier` to `^3.x` in root devDeps
-- [ ] Add `turbo`, `typescript-eslint`, `@eslint/js`, `globals`, `eslint-config-prettier` to root devDeps
+- [x] Create `turbo.json` at repo root with pipelines: `build` (deps `^build`), `test`, `test:ci`, `lint`, `typecheck`, `clean`, `storybook`, `build-storybook`, `dev`
+- [x] Bump `prettier` to `^3.x` in root devDeps
+- [x] Add `turbo` to root devDeps
 
 ### Remove
 
-- [ ] Delete `lerna.json`
-- [ ] Remove `lerna` from root devDeps
-- [ ] Delete `.eslintrc`
-- [ ] Delete `.eslintignore`
+- [x] Delete `lerna.json`
+- [x] Remove `lerna` from root devDeps
 
 ### Edit
 
-- [ ] Root `package.json` scripts: replace every `lerna run X --stream` with `turbo run X`
-- [ ] Add new root scripts: `dev`, `typecheck`, `clean`
-- [ ] Drop root `pretest` cache-clear script
-- [ ] Update root `lint-staged` block to upstream pattern: prettier on `**/*`, `eslint --no-warn-ignored` on `**/*.{ts,tsx,js,mjs}`
-- [ ] Add `typecheck` script (`tsc --noEmit`) to every `packages/*/package.json` so Turbo's pipeline has work to run
+- [x] Root `package.json` scripts: replace every `lerna run X --stream` with `turbo run X`
+- [x] Add new root scripts: `dev`, `typecheck`, `clean`
+- [x] Drop root `pretest` cache-clear script
+- [x] Update root `lint-staged` block to upstream pattern: prettier on `**/*`, `eslint --no-warn-ignored` on `**/*.{ts,tsx,js,mjs}`
+- [x] Add `typecheck` script (`tsc --noEmit`) to every `packages/*/package.json` so Turbo's pipeline has work to run
+- [~] Add `type: module` to root `package.json` (DEFERRED to Phase 2: workspace `eslint-config-base` still uses CommonJS `module.exports`; setting `type: module` here would break legacy package resolution. Phase 2 flips both root + workspace packages together.)
+- [x] Bump per-package `typescript` `4.3.4` → `^5.7.3` (required for `@types/node@22` syntax compatibility)
 
 ### Verify
 
-- [ ] `yarn turbo run lint` exits 0
-- [ ] `yarn turbo run typecheck` exits 0
-- [ ] `yarn turbo run build` builds every package successfully
+- [x] `yarn install` clean (peer-dep warnings expected; `eslint-config-*` packages still on legacy ESLint 8 until Phase 2)
+- [x] `yarn turbo run lint` exits 0 against legacy `.eslintrc` (untouched in this phase)
+- [~] `yarn turbo run typecheck` exits 0 (deferred to Phase 3: requires `tsconfig.base.json` rebase. Root TS bumped to 5.7.3 inside this phase to unblock phase-3; per-package tsconfigs still extend old root and reference legacy `types: [jest]` arrays.)
+- [~] `yarn turbo run build` builds every package successfully (deferred to Phase 3 for same reason.)
+
+### Explicitly NOT in this phase (moved to Phase 2)
+
+- ❌ Do NOT create root `eslint.config.js`
+- ❌ Do NOT delete `.eslintrc` or `.eslintignore`
+- ❌ Do NOT bump `eslint` to v9 in root devDeps (legacy `.eslintrc` requires ESLint 8)
+- ❌ Do NOT add `@eslint/js`, `typescript-eslint`, `globals`, `eslint-config-prettier` to root devDeps — these belong as deps of the workspace `eslint-config-core` package, not root
 
 🔖 **CHECKPOINT 1 — COMMIT NOW**
 
 Verification before commit:
+
 ```bash
 yarn install
-yarn turbo run lint typecheck build
+yarn turbo run lint
 ```
 
-Commit subject: `chore(phase-1): replace lerna with turbo, eslint flat config, prettier 3`
+Commit subject: `chore(phase-1): replace lerna with turbo, prettier 3, ts 5 root bump`
 
 ---
 
-## Phase 2 — Rename eslint configs
+## Phase 2 — Rename eslint configs AND introduce flat config (workspace-owned)
 
-Branch: `refactor/phase-2-rename-eslint-configs`. Hard rename. No shim packages.
+Hard rename + ESLint 9 flat-config rewrite, all owned by the `eslint-config-core` and `eslint-config-web` workspace packages. Root `eslint.config.js` and every consumer package's `eslint.config.js` are ONE-LINER re-exports of the workspace package. The workspace package is the single source of truth.
 
 ### Rename
 
 - [ ] `git mv packages/eslint-config-base packages/eslint-config-core`
 - [ ] `git mv packages/eslint-config-react packages/eslint-config-web`
 
-### Renamed package contents
+### Renamed package contents (`eslint-config-core`)
 
-- [ ] `packages/eslint-config-core/package.json`: `name` → `@dhruv-m-patel/eslint-config-core`, `version` → `1.0.0`
-- [ ] `packages/eslint-config-web/package.json`: `name` → `@dhruv-m-patel/eslint-config-web`, `version` → `1.0.0`
-- [ ] `packages/eslint-config-web/package.json`: bump internal dep `@dhruv-m-patel/eslint-config-base@workspace:^` → `@dhruv-m-patel/eslint-config-core@workspace:^`
-- [ ] Rewrite `packages/eslint-config-core/index.js` as flat-config export (default-export an array of config objects)
-- [ ] Rewrite `packages/eslint-config-web/index.js` as flat-config export, importing core and adding React + react-hooks + jsx-a11y rules
+- [ ] `package.json`: `name` → `@dhruv-m-patel/eslint-config-core`, `version` → `1.0.0`
+- [ ] `package.json`: `type: module`, `main: ./index.js`, `exports: { ".": "./index.js" }`
+- [ ] `package.json`: move ESLint plugin deps that core actually owns — `@eslint/js`, `typescript-eslint`, `globals`, `eslint-config-prettier`, `@typescript-eslint/eslint-plugin` (if not bundled by `typescript-eslint`)
+- [ ] `package.json`: `peerDependencies: { eslint: ">= 9" }`
+- [ ] Drop legacy deps: `eslint-config-airbnb-base`, `eslint-config-airbnb-typescript`, `eslint-config-react`, `eslint-plugin-prettier`, `@babel/eslint-parser`, `@babel/eslint-plugin` (Airbnb configs not yet flat-config compatible; replaced with `tseslint.configs.recommended` + `eslint-config-prettier` last)
+- [ ] Rewrite `index.js` as flat-config default export (array): `js.configs.recommended`, `...tseslint.configs.recommended`, `globals.node + globals.jest`, sensible rule overrides, `eslint-config-prettier` last to disable formatting rules
 
-### Consumer updates (`@dhruv-m-patel/eslint-config-base` → `eslint-config-core`, or `-web` for React pkgs)
+### Renamed package contents (`eslint-config-web`)
+
+- [ ] `package.json`: `name` → `@dhruv-m-patel/eslint-config-web`, `version` → `1.0.0`
+- [ ] `package.json`: dependency `@dhruv-m-patel/eslint-config-base@workspace:^` → `@dhruv-m-patel/eslint-config-core@workspace:^`
+- [ ] `package.json`: `type: module`, `exports` map, `peerDependencies: { eslint: ">= 9" }`
+- [ ] Add deps: `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`, `globals` (for browser globals)
+- [ ] Drop deps: `eslint-plugin-storybook` (storybook 8 has its own; revisit in Phase 5)
+- [ ] Rewrite `index.js` as flat-config default export (array): import `eslint-config-core` and spread, add React + React Hooks + jsx-a11y configs, `globals.browser`
+
+### Root delegation
+
+- [ ] Bump root devDeps: `eslint` `^8.56.0` → `^9.18.0`
+- [ ] Add root devDep `@dhruv-m-patel/eslint-config-core: workspace:^` (replaces `eslint-config-base`)
+- [ ] Create root `eslint.config.js` that re-exports the workspace package — body is essentially `import config from '@dhruv-m-patel/eslint-config-core'; export default [...config, { ignores: [...root-only ignores] }]`
+- [ ] Delete `.eslintrc`
+- [ ] Delete `.eslintignore` (ignores live in flat config)
+
+### Consumer flat configs (one-liner per package)
+
+- [ ] `packages/express-app/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
+- [ ] `packages/web-app/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
+- [ ] `packages/react-components/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
+- [ ] `packages/react-hooks/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
+- [ ] `boilerplates/node-package/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
+- [ ] `boilerplates/react-package/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
+
+### Consumer package.json devDep renames (`eslint-config-base`→`-core`, `eslint-config-react`→`-web`)
 
 - [ ] `packages/express-app/package.json`
 - [ ] `packages/web-app/package.json`
-- [ ] `packages/react-components/package.json` (→ `eslint-config-web`)
-- [ ] `packages/react-hooks/package.json` (→ `eslint-config-web`)
+- [ ] `packages/react-components/package.json`
+- [ ] `packages/react-hooks/package.json`
 - [ ] `boilerplates/node-package/package.json`
-- [ ] `boilerplates/react-package/package.json` (→ `eslint-config-web`)
-- [ ] Root `package.json` if it references the old names
+- [ ] `boilerplates/react-package/package.json`
 
 ### Changesets
 
@@ -164,19 +200,20 @@ Branch: `refactor/phase-2-rename-eslint-configs`. Hard rename. No shim packages.
 
 ### Verify
 
-- [ ] `yarn install` resolves clean
-- [ ] `yarn turbo run lint` passes — flat config wired to consumers
-- [ ] `yarn workspace @dhruv-m-patel/react-components run lint` finds new `eslint-config-web`
+- [ ] `yarn install` resolves clean against ESLint 9 + flat configs
+- [ ] `yarn workspace @dhruv-m-patel/react-components run lint` finds and uses workspace `eslint-config-web` — no inline rules anywhere
+- [ ] `yarn turbo run lint` passes across the monorepo
+- [ ] Grep confirms NO inline `rules:` block in root `eslint.config.js` or any consumer `eslint.config.js` — they MUST be thin re-exports of the workspace package
 
 🔖 **CHECKPOINT 2 — COMMIT NOW**
 
-Commit subject: `refactor(phase-2): rename eslint-config-base→core, eslint-config-react→web`
+Commit subject: `refactor(phase-2): workspace-owned eslint flat config (rename core/web, eslint 9)`
 
 ---
 
 ## Phase 3 — Shared TypeScript base
 
-Branch: `chore/phase-3-tsconfig-base`. Standardize on upstream's `tsconfig.base.json` pattern so cloned packages drop in cleanly.
+Standardize on upstream's `tsconfig.base.json` pattern so cloned packages drop in cleanly.
 
 - [ ] Create `tsconfig.base.json` at repo root: TS 5.7 settings, `target: ES2022`, `module: nodenext`, `moduleResolution: nodenext`, `strict: true`, `lib: [ES2022, DOM]`, `verbatimModuleSyntax: true`, `noUncheckedIndexedAccess: true`, `esModuleInterop: true`, `skipLibCheck: true`, `forceConsistentCasingInFileNames: true`, `declaration: true`
 - [ ] Rewrite root `tsconfig.json` to thin `extends: ./tsconfig.base.json` + `include: []` (or delete it)
@@ -201,7 +238,7 @@ Commit subject: `build(phase-3): tsconfig.base.json + typescript 5.7 across mono
 
 ## Phase 4 — Replace `express-app`
 
-Branch: `feat/phase-4-express-app-v2`. Smallest of the three big swaps. Establish the dual-build + Vitest pattern the React packages will reuse.
+Smallest of the three big swaps. Establish the dual-build + Vitest pattern the React packages will reuse.
 
 ### Wipe + clone
 
@@ -240,7 +277,7 @@ Commit subject: `feat(phase-4)!: rewrite express-app v2 (vitest, dual cjs+esm, o
 
 ## Phase 5 — Replace `react-components`
 
-Branch: `feat/phase-5-react-components-v2`. Clone upstream Vite + Vitest + Storybook 8 + Tailwind v4 + Radix/shadcn package.
+Clone upstream Vite + Vitest + Storybook 8 + Tailwind v4 + Radix/shadcn package.
 
 ### Wipe + clone
 
@@ -277,7 +314,7 @@ Commit subject: `feat(phase-5)!: rewrite react-components v2 (radix + tailwind v
 
 ## Phase 6 — Modernize `react-hooks`
 
-Branch: `feat/phase-6-react-hooks-v2`. Hooks port cleanly; replace test/build infra.
+Hooks port cleanly; replace test/build infra.
 
 ### Source audit
 
@@ -324,15 +361,15 @@ Commit subject: `feat(phase-6)!: react-hooks v2 (vitest, vite library, react 19)
 
 ## Phase 7 — Rewrite `web-app` on Vite SSR
 
-Branch: `feat/phase-7-web-app-vite-ssr`. Largest phase. Upstream has no equivalent — design new public API ourselves, mirror `express-app` style.
+Largest phase. Upstream has no equivalent — design new public API ourselves, mirror `express-app` style.
 
 ### Target public API
 
 ```ts
-export function configureApp(options: WebAppOptions): express.Application
-export function runApp(app: express.Application, options?: RunOptions): void
-export function getViteConfig(options: ViteConfigOptions): InlineConfig
-export type { WebAppOptions, RunOptions, ViteConfigOptions, ExtendedRequest }
+export function configureApp(options: WebAppOptions): express.Application;
+export function runApp(app: express.Application, options?: RunOptions): void;
+export function getViteConfig(options: ViteConfigOptions): InlineConfig;
+export type { WebAppOptions, RunOptions, ViteConfigOptions, ExtendedRequest };
 ```
 
 ### Source
@@ -384,7 +421,7 @@ Commit subject: `feat(phase-7)!: rewrite web-app on vite ssr (drops webpack 4)`
 
 ## Phase 8 — Boilerplates + CI + cleanup
 
-Branch: `chore/phase-8-cleanup`. Final pass.
+Final pass.
 
 ### Boilerplates
 
