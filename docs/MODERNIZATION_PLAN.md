@@ -65,15 +65,15 @@ Refs: docs/MODERNIZATION_PLAN.md
 
 Land first; everything else depends on it. Branch: `chore/phase-0-runtime-bump`.
 
-- [ ] Bump `.nvmrc` from `18.19.0` → `22.13.1`
-- [ ] `package.json` root: `engines.node` `>=18` → `>=22`
-- [ ] `package.json` root: bump `packageManager` to `yarn@4.5.x`
-- [ ] `package.json` root: add/bump `@types/node@^22`
-- [ ] Run `corepack enable && yarn set version stable` to regenerate `.yarn/releases/yarn-4.x.cjs`
-- [ ] `.yarnrc.yml`: confirm `yarnPath` updated, keep `nodeLinker: node-modules`
-- [ ] Create `docs/UPGRADE_NOTES.md` with empty section headers per published package (will fill in each phase)
-- [ ] Verify `node -v` reports `v22.13.1`, `yarn --version` reports 4.x
-- [ ] Verify `yarn install` completes clean (TS 4.3.4 still in place — that is fine)
+- [x] Bump `.nvmrc` from `18.19.0` → `22.13.1`
+- [x] `package.json` root: `engines.node` `>=18` → `>=22`
+- [x] `package.json` root: bump `packageManager` to `yarn@4.5.x`
+- [x] `package.json` root: add/bump `@types/node@^22`
+- [x] Run `corepack enable && yarn set version stable` to regenerate `.yarn/releases/yarn-4.x.cjs`
+- [x] `.yarnrc.yml`: confirm `yarnPath` updated, keep `nodeLinker: node-modules`
+- [x] Create `docs/UPGRADE_NOTES.md` with empty section headers per published package (will fill in each phase)
+- [x] Verify `node -v` reports `v22.13.1`, `yarn --version` reports 4.x
+- [x] Verify `yarn install` completes clean (TS 4.3.4 still in place — that is fine)
 
 🔖 **CHECKPOINT 0 — COMMIT NOW**
 
