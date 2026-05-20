@@ -1,7 +1,0 @@
-{
-  "extends": "@dhruv-m-patel/eslint-config-base",
-  "env": {
-    "node": true,
-    "jest": true
-  }
-}

@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
-    "@dhruv-m-patel/eslint-config-base": "workspace:^",
+    "@dhruv-m-patel/eslint-config-core": "workspace:^",
     "@types/compression": "^1.7.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.10",
@@ -46,6 +46,7 @@
     "babel-loader": "^8.3.0",
     "css-loader": "^6.10.0",
     "cssnano": "^6.0.3",
+    "eslint": "^9.18.0",
     "express": "^4.17.1",
     "jest": "27.0.5",
     "jest-junit": "^12.2.0",

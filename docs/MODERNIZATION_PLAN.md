@@ -147,63 +147,63 @@ Hard rename + ESLint 9 flat-config rewrite, all owned by the `eslint-config-core
 
 ### Rename
 
-- [ ] `git mv packages/eslint-config-base packages/eslint-config-core`
-- [ ] `git mv packages/eslint-config-react packages/eslint-config-web`
+- [x] `git mv packages/eslint-config-base packages/eslint-config-core`
+- [x] `git mv packages/eslint-config-react packages/eslint-config-web`
 
 ### Renamed package contents (`eslint-config-core`)
 
-- [ ] `package.json`: `name` → `@dhruv-m-patel/eslint-config-core`, `version` → `1.0.0`
-- [ ] `package.json`: `type: module`, `main: ./index.js`, `exports: { ".": "./index.js" }`
-- [ ] `package.json`: move ESLint plugin deps that core actually owns — `@eslint/js`, `typescript-eslint`, `globals`, `eslint-config-prettier`, `@typescript-eslint/eslint-plugin` (if not bundled by `typescript-eslint`)
-- [ ] `package.json`: `peerDependencies: { eslint: ">= 9" }`
-- [ ] Drop legacy deps: `eslint-config-airbnb-base`, `eslint-config-airbnb-typescript`, `eslint-config-react`, `eslint-plugin-prettier`, `@babel/eslint-parser`, `@babel/eslint-plugin` (Airbnb configs not yet flat-config compatible; replaced with `tseslint.configs.recommended` + `eslint-config-prettier` last)
-- [ ] Rewrite `index.js` as flat-config default export (array): `js.configs.recommended`, `...tseslint.configs.recommended`, `globals.node + globals.jest`, sensible rule overrides, `eslint-config-prettier` last to disable formatting rules
+- [x] `package.json`: `name` → `@dhruv-m-patel/eslint-config-core`, `version` → `1.0.0`
+- [x] `package.json`: `type: module`, `main: ./index.js`, `exports: { ".": "./index.js" }`
+- [x] `package.json`: move ESLint plugin deps that core actually owns — `@eslint/js`, `typescript-eslint`, `globals`, `eslint-config-prettier`, `@typescript-eslint/eslint-plugin` (if not bundled by `typescript-eslint`)
+- [x] `package.json`: `peerDependencies: { eslint: ">= 9" }`
+- [x] Drop legacy deps: `eslint-config-airbnb-base`, `eslint-config-airbnb-typescript`, `eslint-config-react`, `eslint-plugin-prettier`, `@babel/eslint-parser`, `@babel/eslint-plugin` (Airbnb configs not yet flat-config compatible; replaced with `tseslint.configs.recommended` + `eslint-config-prettier` last)
+- [x] Rewrite `index.js` as flat-config default export (array): `js.configs.recommended`, `...tseslint.configs.recommended`, `globals.node + globals.jest`, sensible rule overrides, `eslint-config-prettier` last to disable formatting rules
 
 ### Renamed package contents (`eslint-config-web`)
 
-- [ ] `package.json`: `name` → `@dhruv-m-patel/eslint-config-web`, `version` → `1.0.0`
-- [ ] `package.json`: dependency `@dhruv-m-patel/eslint-config-base@workspace:^` → `@dhruv-m-patel/eslint-config-core@workspace:^`
-- [ ] `package.json`: `type: module`, `exports` map, `peerDependencies: { eslint: ">= 9" }`
-- [ ] Add deps: `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`, `globals` (for browser globals)
-- [ ] Drop deps: `eslint-plugin-storybook` (storybook 8 has its own; revisit in Phase 5)
-- [ ] Rewrite `index.js` as flat-config default export (array): import `eslint-config-core` and spread, add React + React Hooks + jsx-a11y configs, `globals.browser`
+- [x] `package.json`: `name` → `@dhruv-m-patel/eslint-config-web`, `version` → `1.0.0`
+- [x] `package.json`: dependency `@dhruv-m-patel/eslint-config-base@workspace:^` → `@dhruv-m-patel/eslint-config-core@workspace:^`
+- [x] `package.json`: `type: module`, `exports` map, `peerDependencies: { eslint: ">= 9" }`
+- [x] Add deps: `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`, `globals` (for browser globals)
+- [x] Drop deps: `eslint-plugin-storybook` (storybook 8 has its own; revisit in Phase 5)
+- [x] Rewrite `index.js` as flat-config default export (array): import `eslint-config-core` and spread, add React + React Hooks + jsx-a11y configs, `globals.browser`
 
 ### Root delegation
 
-- [ ] Bump root devDeps: `eslint` `^8.56.0` → `^9.18.0`
-- [ ] Add root devDep `@dhruv-m-patel/eslint-config-core: workspace:^` (replaces `eslint-config-base`)
-- [ ] Create root `eslint.config.js` that re-exports the workspace package — body is essentially `import config from '@dhruv-m-patel/eslint-config-core'; export default [...config, { ignores: [...root-only ignores] }]`
-- [ ] Delete `.eslintrc`
-- [ ] Delete `.eslintignore` (ignores live in flat config)
+- [x] Bump root devDeps: `eslint` `^8.56.0` → `^9.18.0`
+- [x] Add root devDep `@dhruv-m-patel/eslint-config-core: workspace:^` (replaces `eslint-config-base`)
+- [x] Create root `eslint.config.js` that re-exports the workspace package — body is essentially `import config from '@dhruv-m-patel/eslint-config-core'; export default [...config, { ignores: [...root-only ignores] }]`
+- [x] Delete `.eslintrc`
+- [x] Delete `.eslintignore` (ignores live in flat config)
 
 ### Consumer flat configs (one-liner per package)
 
-- [ ] `packages/express-app/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
-- [ ] `packages/web-app/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
-- [ ] `packages/react-components/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
-- [ ] `packages/react-hooks/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
-- [ ] `boilerplates/node-package/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
-- [ ] `boilerplates/react-package/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
+- [x] `packages/express-app/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
+- [x] `packages/web-app/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
+- [x] `packages/react-components/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
+- [x] `packages/react-hooks/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
+- [x] `boilerplates/node-package/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-core`
+- [x] `boilerplates/react-package/eslint.config.js` — re-exports `@dhruv-m-patel/eslint-config-web`
 
 ### Consumer package.json devDep renames (`eslint-config-base`→`-core`, `eslint-config-react`→`-web`)
 
-- [ ] `packages/express-app/package.json`
-- [ ] `packages/web-app/package.json`
-- [ ] `packages/react-components/package.json`
-- [ ] `packages/react-hooks/package.json`
-- [ ] `boilerplates/node-package/package.json`
-- [ ] `boilerplates/react-package/package.json`
+- [x] `packages/express-app/package.json`
+- [x] `packages/web-app/package.json`
+- [x] `packages/react-components/package.json`
+- [x] `packages/react-hooks/package.json`
+- [x] `boilerplates/node-package/package.json`
+- [x] `boilerplates/react-package/package.json`
 
 ### Changesets
 
-- [ ] `.changeset/eslint-configs-renamed.md` — new packages at 1.0.0; consumers each get a major bump because their devDep package name changed
+- [x] `.changeset/eslint-configs-renamed.md` — new packages at 1.0.0; consumers each get a major bump because their devDep package name changed
 
 ### Verify
 
-- [ ] `yarn install` resolves clean against ESLint 9 + flat configs
-- [ ] `yarn workspace @dhruv-m-patel/react-components run lint` finds and uses workspace `eslint-config-web` — no inline rules anywhere
-- [ ] `yarn turbo run lint` passes across the monorepo
-- [ ] Grep confirms NO inline `rules:` block in root `eslint.config.js` or any consumer `eslint.config.js` — they MUST be thin re-exports of the workspace package
+- [x] `yarn install` resolves clean against ESLint 9 + flat configs
+- [x] `yarn workspace @dhruv-m-patel/react-components run lint` finds and uses workspace `eslint-config-web` — no inline rules anywhere
+- [x] `yarn turbo run lint` passes across the monorepo
+- [x] Grep confirms NO inline `rules:` block in root `eslint.config.js` or any consumer `eslint.config.js` — they MUST be thin re-exports of the workspace package
 
 🔖 **CHECKPOINT 2 — COMMIT NOW**
 

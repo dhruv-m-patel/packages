@@ -19,7 +19,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.10",
     "@babel/eslint-plugin": "^7.23.5",
-    "@dhruv-m-patel/eslint-config-base": "workspace:^",
+    "@dhruv-m-patel/eslint-config-core": "workspace:^",
     "jest": "27.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.3",

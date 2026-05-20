@@ -1,6 +1,7 @@
 {
   "name": "@dhruv-m-patel/packages",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">= 22",
     "npm": ">= 10",
@@ -11,13 +12,12 @@
   ],
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",
-    "@babel/eslint-plugin": "^7.23.5",
     "@changesets/cli": "^2.27.1",
-    "@dhruv-m-patel/eslint-config-base": "workspace:^",
+    "@dhruv-m-patel/eslint-config-core": "workspace:^",
     "@types/node": "^22.13.0",
     "cli-glob": "^0.1.0",
     "dotenv": "^16.0.3",
-    "eslint": "^8.56.0",
+    "eslint": "^9.18.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.3.0",
     "prettier": "^3.4.2",
