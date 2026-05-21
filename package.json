@@ -45,7 +45,7 @@
     "lint:fix": "turbo run lint:fix",
     "prettier:format": "prettier --write .",
     "prettier:verify": "prettier --check .",
-    "publish": "yarn workspaces foreach --no-private --from '@dhruv-m-patel/*' npm publish --access public && yarn changeset tag",
+    "publish": "yarn workspaces foreach -A --no-private --from '@dhruv-m-patel/*' npm publish --access public --tolerate-republish && yarn changeset tag",
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",
     "typecheck": "turbo run typecheck",

@@ -17,6 +17,30 @@ A modern monorepo of `@dhruv-m-patel/*` npm packages — Yarn 4 workspaces, Turb
 - **Storybook 8** — `react-components`
 - **Changesets** — versioning + publish
 
+```mermaid
+graph LR
+    subgraph Runtime
+        N[Node 22] --> Y[Yarn 4]
+    end
+    subgraph Orchestration
+        Y --> T[Turbo<br/>build / test / lint / typecheck]
+    end
+    subgraph "Per-package toolchain"
+        T --> TS[TypeScript 5.7<br/>tsconfig.base.json]
+        T --> V[Vite 6<br/>library + SSR builds]
+        T --> VT[Vitest 3<br/>jsdom / node]
+        T --> SB[Storybook 8<br/>react-components only]
+    end
+    subgraph Quality
+        T --> EL[ESLint 9 flat config<br/>eslint-config-core / -web]
+        T --> PR[Prettier 3]
+    end
+    subgraph Release
+        Y --> CS[Changesets]
+        CS --> CI[GitHub Actions<br/>publish.yml / release-beta.yml /<br/>release-snapshot.yml]
+    end
+```
+
 ## Setup
 
 ```bash
@@ -37,14 +61,24 @@ yarn turbo run build
 - `@dhruv-m-patel/react-components` — ~41 Radix/shadcn primitives, Tailwind v4 themable
 - `@dhruv-m-patel/react-hooks` — typed hook library, React 18/19
 
+```mermaid
+graph TD
+    Core[eslint-config-core] --> Web[eslint-config-web]
+    Core -.devDep.-> Express[express-app]
+    Core -.devDep.-> WebApp[web-app]
+    Web -.devDep.-> Components[react-components]
+    Web -.devDep.-> Hooks[react-hooks]
+```
+
 ## Boilerplates
 
 `boilerplates/node-package` and `boilerplates/react-package` are starter templates for new packages — not part of the workspaces array, not published.
 
 ## Publishing packages
 
-- Run `yarn changeset` locally and submit the markdown file with your PR.
-- Merging to `main` triggers the `publish` workflow which uses `changesets/action@v1` to either open a Version Packages PR or publish via `yarn publish`.
+See [`PUBLISHING.md`](./PUBLISHING.md) for the full release flow — stable / beta / snapshot, single-package vs all, CI vs manual, dist-tag matrix, and the Changesets cheatsheet.
+
+Short version: `yarn changeset` -> commit -> merge to `main` -> the `publish` workflow opens a Version Packages PR -> merge -> npm publish under `latest`.
 
 ## Common commands
 
