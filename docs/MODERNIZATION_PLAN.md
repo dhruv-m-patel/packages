@@ -283,30 +283,30 @@ Clone upstream Vite + Vitest + Storybook 8 + Tailwind v4 + Radix/shadcn package.
 
 ### Wipe + clone
 
-- [ ] Delete contents of `packages/react-components/src/`, `.storybook/`, `build/`, `typings/`
-- [ ] Clone upstream `packages/react-components/src/**` (all components, `theme/`, `lib/utils.ts`, `styles/`, `index.ts`, `setupTests.ts`)
-- [ ] Clone `.storybook/main.ts`, `.storybook/preview.ts`
-- [ ] Clone `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`
-- [ ] Clone `README.md`
+- [x] Delete contents of `packages/react-components/src/`, `.storybook/`, `build/`, `typings/`
+- [x] Clone upstream `packages/react-components/src/**` (all components, `theme/`, `lib/utils.ts`, `styles/`, `index.ts`, `setupTests.ts`)
+- [x] Clone `.storybook/main.ts`, `.storybook/preview.ts`
+- [x] Clone `vite.config.ts`, `vitest.config.ts`, `tsconfig.json`
+- [x] Clone `README.md`
 
 ### Adapt
 
-- [ ] Replace `package.json` with upstream's
-- [ ] Set `version` → `2.0.0`
-- [ ] Switch eslint config devDep → `@dhruv-m-patel/eslint-config-web@workspace:^`
-- [ ] Delete old `.stylelintrc` (Tailwind v4 supersedes)
-- [ ] Confirm React 19 + Tailwind v4 + Radix devDeps land per upstream
+- [x] Replace `package.json` with upstream's
+- [x] Set `version` → `2.0.0`
+- [x] Switch eslint config devDep → `@dhruv-m-patel/eslint-config-web@workspace:^`
+- [x] Delete old `.stylelintrc` (Tailwind v4 supersedes)
+- [x] Confirm React 19 + Tailwind v4 + Radix devDeps land per upstream
 
 ### Changeset
 
-- [ ] `.changeset/react-components-v2.md`: major bump → `2.0.0`. Drops MUI v4. New Radix/shadcn catalog. Requires React 18+. Ships `./styles` export for Tailwind theme CSS.
+- [x] `.changeset/react-components-v2.md`: major bump → `2.0.0`. Drops MUI v4. New Radix/shadcn catalog. Requires React 18+. Ships `./styles` export for Tailwind theme CSS.
 
 ### Verify
 
-- [ ] `yarn workspace @dhruv-m-patel/react-components run typecheck`
-- [ ] `yarn workspace @dhruv-m-patel/react-components run build` produces `dist/index.js`, `dist/index.d.ts`, `dist/styles/theme.css`
-- [ ] `yarn workspace @dhruv-m-patel/react-components run test:ci` coverage thresholds pass
-- [ ] `yarn workspace @dhruv-m-patel/react-components run storybook` opens on `:6007`, stories render
+- [x] `yarn workspace @dhruv-m-patel/react-components run typecheck`
+- [x] `yarn workspace @dhruv-m-patel/react-components run build` produces `dist/index.js`, `dist/index.d.ts`, `dist/styles/theme.css`
+- [x] `yarn workspace @dhruv-m-patel/react-components run test:ci` coverage thresholds pass
+- [x] `yarn workspace @dhruv-m-patel/react-components run storybook` opens on `:6007`, stories render
 
 🔖 **CHECKPOINT 5 — COMMIT NOW**
 
