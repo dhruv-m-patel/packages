@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.0
+
+### Minor Changes
+
+- dc4626b: Export types and fix dependencies
+
 ## 1.4.0
 
 ### Minor Changes

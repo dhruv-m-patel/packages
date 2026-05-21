@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.8.0
+
+### Minor Changes
+
+- dc4626b: Export types and fix dependencies
+
+## 1.7.0
+
+### Minor Changes
+
+- 38321e2: Upgrade to webpack v5
+
 ## 1.6.0
 
 ### Minor Changes
