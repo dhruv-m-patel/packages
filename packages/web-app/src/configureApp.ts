@@ -1,159 +1,191 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
-import cookieParser from 'cookie-parser';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import compression from 'compression';
-import enrouten from 'express-enrouten';
-import morgan from 'morgan';
-import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { v4 as uuidV4 } from 'uuid';
-import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
-import 'fetch-everywhere';
+import express, {
+  type Application,
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express';
+import session from 'express-session';
+import morgan from 'morgan';
+import type { InlineConfig, ViteDevServer } from 'vite';
+import { finalErrorHandler } from './middleware/finalErrorHandler.js';
+import { createHealthCheck } from './middleware/healthCheck.js';
+import { requestTracing } from './middleware/requestTracing.js';
+import type { WebAppOptions } from './types.js';
 
-export interface ExtendedRequest extends Request {
-  id?: string;
+/**
+ * Shape we expect a project's SSR entry to expose. The entry is
+ * loaded via `vite.ssrLoadModule` (dev) or `import()` (prod).
+ */
+interface SsrEntryModule {
+  render: (
+    url: string,
+    opts?: Record<string, unknown>,
+  ) => Promise<{ html: string; head?: string }>;
 }
 
-export interface ResponseError extends Error {
-  status?: number;
+function resolveMode(options: WebAppOptions): 'development' | 'production' {
+  if (options.mode) return options.mode;
+  const env = process.env.NODE_ENV;
+  return env === 'development' ? 'development' : 'production';
 }
 
-function isPromise(value?: any) {
-  return Boolean(value && typeof value.then === 'function');
+async function readTemplate(templatePath: string): Promise<string> {
+  return fs.readFile(templatePath, 'utf-8');
 }
 
-function finalErrorHandler(
-  err: ResponseError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  if (err) {
-    if (!err.status) {
-      console.error(err.message, err.stack);
-    }
-    res.status(err.status || 500).json({
-      message: err.message,
-    });
-  } else {
-    next();
-  }
+function injectTemplate(
+  template: string,
+  appHtml: string,
+  appHead: string,
+): string {
+  return template
+    .replace('<!--app-head-->', appHead)
+    .replace('<!--app-html-->', appHtml);
 }
 
-export interface AppOptions {
-  paths: {
-    routes: string;
-    webpackConfig: string;
-    staticDirectories?: Array<string>;
-  };
-  sessionSecret?: string;
-  setup?: (app: express.Application) => void | Promise<void>;
-  useBabel?: false;
-}
-
-export default function configureApp(options: AppOptions) {
+/**
+ * Configure an Express SSR application backed by Vite.
+ *
+ * In `development`, Vite is run in middleware mode and the SSR entry
+ * is loaded via `ssrLoadModule` for HMR-friendly rendering. In
+ * `production`, the pre-built client assets are served from
+ * `<clientRoot>/dist/client` and the pre-built server bundle is
+ * imported from `<clientRoot>/dist/server/entry-server.js`.
+ *
+ * Async wiring (Vite createServer, consumer `setup`, the catch-all
+ * route, and the final error handler) is attached to a promise on
+ * `app.locals.ready`. `runApp` awaits this promise before listening,
+ * so consumers using `runApp` don't need to think about it.
+ */
+export function configureApp(options: WebAppOptions = {}): Application {
   const {
-    setup,
-    paths: { routes, staticDirectories, webpackConfig },
+    appName = 'web-app',
+    clientRoot = process.cwd(),
+    serverEntry = 'src/entry-server.tsx',
+    templateHtml = 'index.html',
+    staticDirectories = [],
     sessionSecret,
-    useBabel,
+    setup,
+    viteConfig: viteOverride,
   } = options;
+  const mode = resolveMode(options);
 
-  // Add support for babel if requested by caller app
-  if (useBabel) {
-    // eslint-disable-next-line global-require
-    require('@babel/register')({
-      root: process.cwd(),
-      ignore: [/node_modules/],
-      only: [process.cwd()],
-    });
-  }
-
-  const app: Application = express();
+  const app = express();
   app.disable('x-powered-by');
-  app.use(cookieParser());
-  app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(compression());
-  app.use(morgan('combined'));
+  app.use(cookieParser());
   app.use(cors());
+  app.use(morgan('combined'));
 
-  // Enable distributed tracing through request identifiers
-  app.use((req: ExtendedRequest, res: Response, next: NextFunction) => {
-    if (!req.id) {
-      req.id = uuidV4();
-      next();
-    } else {
-      next();
-    }
-  });
+  app.use(requestTracing);
 
-  // Enable sessions if session secret was provided by consumer
   if (sessionSecret) {
     app.use(
       session({
         secret: sessionSecret,
-        saveUninitialized: true,
         resave: false,
+        saveUninitialized: true,
         cookie: {
           httpOnly: true,
-          maxAge: 60 * 60 * 10000, // Cookies will be valid for 1 hour
+          maxAge: 3600000,
         },
-      })
+      }),
     );
   }
 
-  if (staticDirectories?.length) {
-    staticDirectories.forEach((path) => {
-      app.use(express.static(path));
-    });
-  }
+  app.get('/health', createHealthCheck(appName));
 
-  // eslint-disable-next-line global-require
-  const config = require(webpackConfig);
-  const wpconfig = typeof config === 'function' ? config() : config;
-
-  if (process.env.NODE_ENV === 'development') {
-    const compiler = webpack(wpconfig);
-
-    app.use(
-      webpackDevMiddleware(compiler, {
-        stats: { colors: true },
-        publicPath: wpconfig.output.publicPath,
-        serverSideRender: true,
-      })
-    );
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    app.use(
-      webpackHotMiddleware(compiler, {
-        reload: true,
-        heartbeat: 10000,
-      })
-    );
-  } else {
-    // If running in non-development mode, expose the public path as static
-    app.use(express.static(wpconfig.output.path));
-  }
-
-  // Support directory-based routing by default
-  app.use(
-    enrouten({
-      directory: routes,
-    })
-  );
-
-  // Allow consumer to run its own setup adding additional things for server app
-  if (setup && typeof setup === 'function') {
-    if (isPromise(app)) {
-      setup(app)?.then(() => {
-        app.use(finalErrorHandler);
-      });
-      return app;
+  app.locals.ready = (async () => {
+    if (setup) {
+      await Promise.resolve(setup(app));
     }
-    setup(app);
-  }
-  // Add final error handler for api endpoints
-  app.use(finalErrorHandler);
+
+    if (mode === 'development') {
+      const vite = await import('vite');
+      const baseConfig: InlineConfig = {
+        root: clientRoot,
+        appType: 'custom',
+        server: { middlewareMode: true },
+      };
+      const merged = viteOverride
+        ? vite.mergeConfig(baseConfig, viteOverride)
+        : baseConfig;
+      const viteServer: ViteDevServer = await vite.createServer({
+        ...merged,
+        server: { ...(merged.server ?? {}), middlewareMode: true },
+        appType: 'custom',
+      });
+      app.use(viteServer.middlewares);
+
+      const templatePath = path.resolve(clientRoot, templateHtml);
+      const serverEntryPath = path.resolve(clientRoot, serverEntry);
+
+      app.get('*', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const rawTemplate = await readTemplate(templatePath);
+          const template = await viteServer.transformIndexHtml(
+            req.originalUrl,
+            rawTemplate,
+          );
+          const mod = (await viteServer.ssrLoadModule(
+            serverEntryPath,
+          )) as SsrEntryModule;
+          const { html: appHtml, head: appHead = '' } = await mod.render(
+            req.originalUrl,
+          );
+          const html = injectTemplate(template, appHtml, appHead);
+          res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+        } catch (err) {
+          if (err instanceof Error) {
+            viteServer.ssrFixStacktrace(err);
+          }
+          next(err);
+        }
+      });
+    } else {
+      const clientDist = path.join(clientRoot, 'dist', 'client');
+      const serverBundle = path.join(
+        clientRoot,
+        'dist',
+        'server',
+        'entry-server.js',
+      );
+      const templatePath = path.join(clientDist, 'index.html');
+
+      app.use(express.static(clientDist, { index: false }));
+      for (const dir of staticDirectories) {
+        app.use(express.static(path.resolve(clientRoot, dir)));
+      }
+
+      app.get('*', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const template = await readTemplate(templatePath);
+          const mod = (await import(
+            pathToFileURL(serverBundle).href
+          )) as SsrEntryModule;
+          const { html: appHtml, head: appHead = '' } = await mod.render(
+            req.originalUrl,
+          );
+          const html = injectTemplate(template, appHtml, appHead);
+          res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+        } catch (err) {
+          next(err);
+        }
+      });
+    }
+
+    app.use(finalErrorHandler);
+  })();
+
   return app;
 }
+
+export default configureApp;

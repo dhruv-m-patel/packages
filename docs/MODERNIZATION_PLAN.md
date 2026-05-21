@@ -376,19 +376,19 @@ export type { WebAppOptions, RunOptions, ViteConfigOptions, ExtendedRequest };
 
 ### Source
 
-- [ ] Delete `src/getWebpackConfig.ts`
-- [ ] Delete `typings/` dir (Webpack ambient types)
-- [ ] Rewrite `src/configureApp.ts`:
+- [x] Delete `src/getWebpackConfig.ts`
+- [x] Delete `typings/` dir (Webpack ambient types)
+- [x] Rewrite `src/configureApp.ts`:
   - Keep cors/compression/cookie-parser/morgan/express-session middleware plumbing
   - Add Vite-aware dev path: `vite.createServer({ middlewareMode: 'ssr' })` mounted as middleware, SSR module loaded via `vite.ssrLoadModule`
   - In prod: built server bundle is `import()`ed directly
-- [ ] Rewrite `src/runApp.ts` (preserve cluster mode + async setup callback)
-- [ ] Add `src/getViteConfig.ts` exporting default Vite config (React plugin + SSR build entry + manifest output) for consumers to spread
-- [ ] Update `src/index.ts` exports per target API above
+- [x] Rewrite `src/runApp.ts` (preserve cluster mode + async setup callback)
+- [x] Add `src/getViteConfig.ts` exporting default Vite config (React plugin + SSR build entry + manifest output) for consumers to spread
+- [x] Update `src/index.ts` exports per target API above
 
 ### Package config
 
-- [ ] Replace `packages/web-app/package.json`:
+- [x] Replace `packages/web-app/package.json`:
   - `version` → `2.0.0`
   - `engines.node` → `>=22`
   - Dual CJS+ESM build like `express-app`
@@ -396,24 +396,24 @@ export type { WebAppOptions, RunOptions, ViteConfigOptions, ExtendedRequest };
   - Add `vite@^6`, `@vitejs/plugin-react@^4` as peerDeps
   - Keep `express`, `compression`, `cors`, `cookie-parser`, `morgan`, `express-session`, `express-enrouten` as deps
   - eslint config devDep → `@dhruv-m-patel/eslint-config-core@workspace:^`
-- [ ] Add `tsconfig.json`, `tsconfig.cjs.json`, `tsconfig.esm.json`
-- [ ] Add `vitest.config.ts`
+- [x] Add `tsconfig.json`, `tsconfig.cjs.json`, `tsconfig.esm.json`
+- [x] Add `vitest.config.ts`
 
 ### Tests
 
-- [ ] Vitest + supertest: prove dev middleware path renders
-- [ ] Vitest: `/health` route works
-- [ ] Vitest: session middleware wired
+- [x] Vitest + supertest: prove dev middleware path renders
+- [x] Vitest: `/health` route works
+- [x] Vitest: session middleware wired
 
 ### Changeset
 
-- [ ] `.changeset/web-app-v2.md`: major bump → `2.0.0`. Removes Webpack 4. `getWebpackConfig` removed → use `getViteConfig`. Drops `fetch-everywhere` (Node 22 has global `fetch`). Drops `@babel/register`.
+- [x] `.changeset/web-app-v2.md`: major bump → `2.0.0`. Removes Webpack 4. `getWebpackConfig` removed → use `getViteConfig`. Drops `fetch-everywhere` (Node 22 has global `fetch`). Drops `@babel/register`.
 
 ### Verify
 
-- [ ] `yarn workspace @dhruv-m-patel/web-app run build` emits `build/cjs/` + `build/esm/`
-- [ ] `yarn workspace @dhruv-m-patel/web-app run test` Vitest green
-- [ ] Manual: tiny SSR app in `boilerplates/react-package` extended with `entry-server.tsx`, run dev (Vite middleware) + prod (built bundle)
+- [x] `yarn workspace @dhruv-m-patel/web-app run build` emits `build/cjs/` + `build/esm/`
+- [x] `yarn workspace @dhruv-m-patel/web-app run test` Vitest green
+- [~] Manual: tiny SSR app in `boilerplates/react-package` extended with `entry-server.tsx`, run dev (Vite middleware) + prod (built bundle) (deferred — boilerplates pass in Phase 8)
 
 🔖 **CHECKPOINT 7 — COMMIT NOW**
 
