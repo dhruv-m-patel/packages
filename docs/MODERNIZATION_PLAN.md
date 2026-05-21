@@ -320,14 +320,14 @@ Hooks port cleanly; replace test/build infra.
 
 ### Source audit
 
-- [ ] Audit each hook in `src/use*.ts` for legacy lifecycles or removed APIs (none expected; hooks are framework-agnostic)
-- [ ] Verify `useFetch` uses native `fetch`
-- [ ] Verify `useEventListener` ref typing OK under React 19
-- [ ] Apply minimal source edits if audit finds issues
+- [x] Audit each hook in `src/use*.ts` for legacy lifecycles or removed APIs (none expected; hooks are framework-agnostic)
+- [x] Verify `useFetch` uses native `fetch`
+- [x] Verify `useEventListener` ref typing OK under React 19
+- [x] Apply minimal source edits if audit finds issues
 
 ### Package config
 
-- [ ] Replace `packages/react-hooks/package.json`:
+- [x] Replace `packages/react-hooks/package.json`:
   - `version` → `2.0.0`
   - `peerDependencies.react` → `^18.0.0 || ^19.0.0`
   - Drop `jest`, `jest-junit`, `ts-jest`, old `@testing-library/*`
@@ -335,25 +335,25 @@ Hooks port cleanly; replace test/build infra.
   - eslint config devDep → `@dhruv-m-patel/eslint-config-web@workspace:^`
   - Scripts: `build`, `test`, `test:ci`, `typecheck` (drop dual `tsc` scripts)
   - Output: `dist/index.js`, `dist/index.d.ts`, modern `exports` map
-- [ ] Add `vite.config.ts` (library mode, externalize React)
-- [ ] Add `vitest.config.ts` (jsdom)
-- [ ] Update `tsconfig.json` to extend `../../tsconfig.base.json`
-- [ ] Delete old `jest.config.js`
-- [ ] Delete `typings/` dir if empty
+- [x] Add `vite.config.ts` (library mode, externalize React)
+- [x] Add `vitest.config.ts` (jsdom)
+- [x] Update `tsconfig.json` to extend `../../tsconfig.base.json`
+- [x] Delete old `jest.config.js`
+- [x] Delete `typings/` dir if empty
 
 ### Optional but recommended
 
-- [ ] Add minimal Vitest test for at least 3 most-used hooks (`useDebounce`, `useFetch`, `useToggle`)
+- [x] Add minimal Vitest test for at least 3 most-used hooks (`useDebounce`, `useFetch`, `useToggle`)
 
 ### Changeset
 
-- [ ] `.changeset/react-hooks-v2.md`: major bump → `2.0.0`. Requires React 18+; build output paths changed.
+- [x] `.changeset/react-hooks-v2.md`: major bump → `2.0.0`. Requires React 18+; build output paths changed.
 
 ### Verify
 
-- [ ] `yarn workspace @dhruv-m-patel/react-hooks run build` populates `dist/` with `.d.ts`
-- [ ] `yarn workspace @dhruv-m-patel/react-hooks run test`
-- [ ] `yarn workspace @dhruv-m-patel/react-hooks run typecheck` clean under React 19 types
+- [x] `yarn workspace @dhruv-m-patel/react-hooks run build` populates `dist/` with `.d.ts`
+- [x] `yarn workspace @dhruv-m-patel/react-hooks run test`
+- [x] `yarn workspace @dhruv-m-patel/react-hooks run typecheck` clean under React 19 types
 
 🔖 **CHECKPOINT 6 — COMMIT NOW**
 

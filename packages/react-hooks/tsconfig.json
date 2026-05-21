@@ -1,19 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "Node",
-    "jsx": "react",
-    "outDir": "build/esm",
-    "rootDir": "./src",
-    "noImplicitAny": false,
-    "types": ["node", "jest"]
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "outDir": "dist"
   },
-  "include": ["./src"],
-  "exclude": [
-    "node_modules",
-    "./build",
-    "./src/setupTests.ts",
-    "./src/**/*.test.tsx"
-  ]
+  "include": ["src", "tests", "vite.config.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

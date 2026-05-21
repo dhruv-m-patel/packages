@@ -5,7 +5,7 @@ import { useEffect } from 'react';
  * @param fn Function to execute at interval
  * @param interval Interval in milliseconds
  */
-export default function useInterval(fn, interval) {
+export default function useInterval(fn: () => void, interval: number) {
   useEffect(() => {
     const id = setInterval(fn, interval);
     return () => {

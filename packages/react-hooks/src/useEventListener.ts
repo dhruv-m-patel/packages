@@ -8,11 +8,11 @@ import { useRef, useEffect } from 'react';
  * @param element Optional target element to set event listener on. Default is window.
  */
 export default function useEventListener(
-  domEvent: string,
-  handler: () => void,
-  element = window
+  domEvent: keyof WindowEventMap | string,
+  handler: (event: Event) => void,
+  element: HTMLElement | Window = window
 ) {
-  const savedHandler = useRef<(e) => void>();
+  const savedHandler = useRef<((e: Event) => void) | undefined>(undefined);
 
   useEffect(() => {
     savedHandler.current = handler;
@@ -23,7 +23,7 @@ export default function useEventListener(
       return;
     }
 
-    const eventListener = (event) => {
+    const eventListener = (event: Event) => {
       if (savedHandler?.current) {
         savedHandler.current(event);
       }

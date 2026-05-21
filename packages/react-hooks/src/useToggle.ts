@@ -13,7 +13,9 @@ import { useCallback, useState } from 'react';
  * @param initialState boolean value indicating the initial state value being truthy or falsy
  * @returns current truthy/boolean state and the state setter
  */
-export default function useToggle(initialState = false): [boolean, any] {
+export default function useToggle(
+  initialState = false
+): [boolean, () => void] {
   const [state, setState] = useState<boolean>(initialState);
 
   const toggle = useCallback(() => {

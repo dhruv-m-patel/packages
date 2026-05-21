@@ -1,12 +1,12 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, EffectCallback, DependencyList } from 'react';
 import equal from 'fast-deep-equal';
 
-function useDependencyCheck(value) {
-  const ref = useRef();
+function useDependencyCheck<T>(value: T): T {
+  const ref = useRef<T | undefined>(undefined);
   if (!ref.current || !equal(value, ref.current)) {
     ref.current = value;
   }
-  return ref.current;
+  return ref.current as T;
 }
 
 /**
@@ -17,6 +17,9 @@ function useDependencyCheck(value) {
  * @param dependencies Array of dependencies to check for running callback function
  * @returns useEffect callback updated to run with deep compared dependencies for objects
  */
-export default function useEffectWithDeepCompare(callback, dependencies) {
+export default function useEffectWithDeepCompare(
+  callback: EffectCallback,
+  dependencies: DependencyList
+) {
   return useEffect(callback, useDependencyCheck(dependencies));
 }

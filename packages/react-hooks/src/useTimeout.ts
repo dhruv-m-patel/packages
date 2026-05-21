@@ -5,7 +5,7 @@ import { useEffect } from 'react';
  * @param fn Function to execute at a timeout
  * @param timeout timeout in milliseconds
  */
-export default function useTimeout(fn, timeout) {
+export default function useTimeout(fn: () => void, timeout: number) {
   useEffect(() => {
     const id = setTimeout(fn, timeout);
     return () => {
