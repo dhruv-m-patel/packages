@@ -427,39 +427,39 @@ Final pass.
 
 ### Boilerplates
 
-- [ ] `boilerplates/node-package`: TS 5.7, Vitest, Node 22 engines, `eslint-config-core` devDep
-- [ ] `boilerplates/react-package`: TS 5.7, Vite library + Vitest (replace Jest), React 19 peerDep, `eslint-config-web` devDep
-- [ ] Confirm boilerplates remain OUT of the workspaces array
+- [x] `boilerplates/node-package`: TS 5.7, Vitest, Node 22 engines, `eslint-config-core` devDep
+- [x] `boilerplates/react-package`: TS 5.7, Vite library + Vitest (replace Jest), React 19 peerDep, `eslint-config-web` devDep
+- [x] Confirm boilerplates remain OUT of the workspaces array
 
 ### CI
 
-- [ ] `.github/workflows/build.yml`: add `corepack enable` step before `yarn install`
-- [ ] `.github/workflows/build.yml`: replace any `lerna` invocations with `yarn turbo run X`
-- [ ] `.github/workflows/build.yml`: add Turbo cache step (optional; even local cache speeds CI)
-- [ ] `.github/workflows/publish.yml`: add `corepack enable`
-- [ ] `.github/workflows/publish.yml`: confirm `yarn publish` script runs `yarn workspaces foreach --no-private --from '@dhruv-m-patel/*' npm publish --access public && yarn changeset tag` under Yarn 4 (syntax unchanged)
+- [x] `.github/workflows/build.yml`: add `corepack enable` step before `yarn install`
+- [x] `.github/workflows/build.yml`: replace any `lerna` invocations with `yarn turbo run X`
+- [~] `.github/workflows/build.yml`: add Turbo cache step (deferred — local cache already speeds CI; remote cache requires a Turbo token secret)
+- [x] `.github/workflows/publish.yml`: add `corepack enable`
+- [x] `.github/workflows/publish.yml`: confirm `yarn publish` script runs `yarn workspaces foreach --no-private --from '@dhruv-m-patel/*' npm publish --access public && yarn changeset tag` under Yarn 4 (syntax unchanged)
 
 ### Husky
 
-- [ ] Bump `husky` v8 → v9
-- [ ] Update `.husky/pre-commit` to v9 inline syntax
-- [ ] Update `.husky/pre-push` to v9 inline syntax
-- [ ] Drop blanket `eslint .` from pre-commit (lint-staged handles it)
+- [x] Bump `husky` v8 → v9
+- [x] Update `.husky/pre-commit` to v9 inline syntax
+- [x] Update `.husky/pre-push` to v9 inline syntax
+- [x] Drop blanket `eslint .` from pre-commit (lint-staged handles it)
 
 ### Cleanup
 
-- [ ] Delete `jest.mock.js`
-- [ ] Delete root `jest.config.js`
-- [ ] Rewrite root `readme.md` to reflect new toolchain + package list
-- [ ] Finalize `docs/UPGRADE_NOTES.md` with: old name → new name table for eslint configs; Webpack → Vite migration pointer for web-app consumers; Material-UI → Radix migration pointer for react-components consumers
+- [x] Delete `jest.mock.js`
+- [x] Delete root `jest.config.js`
+- [x] Rewrite root `readme.md` to reflect new toolchain + package list
+- [x] Finalize `docs/UPGRADE_NOTES.md` with: old name → new name table for eslint configs; Webpack → Vite migration pointer for web-app consumers; Material-UI → Radix migration pointer for react-components consumers
 
 ### End-to-end gate
 
-- [ ] Clean clone → `nvm use && corepack enable && yarn install && yarn turbo run lint typecheck build test:ci` exits 0
-- [ ] `.github/workflows/build.yml` runs green on the PR
-- [ ] Dry-run `yarn changeset version` produces sensible bumps for every published package
-- [ ] Open Storybook and click through 3-4 components
-- [ ] Smoke test rewritten `web-app` against sample SSR app
+- [x] Clean clone → `nvm use && corepack enable && yarn install && yarn turbo run lint typecheck build test:ci` exits 0
+- [~] `.github/workflows/build.yml` runs green on the PR (deferred — runs on push)
+- [~] Dry-run `yarn changeset version` produces sensible bumps for every published package (deferred — verify before opening release PR)
+- [~] Open Storybook and click through 3-4 components (deferred — `build-storybook` succeeds in Phase 5)
+- [~] Smoke test rewritten `web-app` against sample SSR app (deferred — Phase 7 vitest covers prod path; full SSR consumer smoke tracked separately)
 
 🔖 **CHECKPOINT 8 — COMMIT NOW**
 
