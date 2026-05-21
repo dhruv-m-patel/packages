@@ -4,8 +4,7 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "rootDir": "./src",
-    "outDir": "./build",
-    "types": ["node"]
+    "outDir": "./build/esm"
   },
   "include": ["./src"],
   "exclude": ["./tests", "node_modules"]

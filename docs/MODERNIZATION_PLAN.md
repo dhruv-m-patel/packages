@@ -244,32 +244,32 @@ Smallest of the three big swaps. Establish the dual-build + Vitest pattern the R
 
 ### Wipe + clone
 
-- [ ] Delete contents of `packages/express-app/src/`, `tests/`, `typings/`, `build/`
-- [ ] Clone upstream `dhruv-m-patel/monorepo:packages/express-app/src/index.ts`
-- [ ] Clone `src/types.ts`
-- [ ] Clone `src/middleware/{index,errorHandler,healthCheck,requestTracing}.ts`
-- [ ] Clone `tests/{configureApp,middleware,runApp}.test.ts`
-- [ ] Clone `tsconfig.json`, `tsconfig.cjs.json`, `tsconfig.esm.json`
-- [ ] Clone `vitest.config.ts`
-- [ ] Clone `README.md` (replace existing if any)
+- [x] Delete contents of `packages/express-app/src/`, `tests/`, `typings/`, `build/`
+- [x] Clone upstream `dhruv-m-patel/monorepo:packages/express-app/src/index.ts`
+- [x] Clone `src/types.ts`
+- [x] Clone `src/middleware/{index,errorHandler,healthCheck,requestTracing}.ts`
+- [x] Clone `tests/{configureApp,middleware,runApp}.test.ts`
+- [x] Clone `tsconfig.json`, `tsconfig.cjs.json`, `tsconfig.esm.json`
+- [x] Clone `vitest.config.ts`
+- [x] Clone `README.md` (replace existing if any)
 
 ### Adapt to local repo
 
-- [ ] Replace `packages/express-app/package.json` with upstream's
-- [ ] Set `version` → `2.0.0`
-- [ ] Switch `@dhruv-m-patel/eslint-config-base` devDep → `@dhruv-m-patel/eslint-config-core@workspace:^`
-- [ ] Verify `tsconfig.{cjs,esm}.json` reference our `tsconfig.base.json` correctly
+- [x] Replace `packages/express-app/package.json` with upstream's
+- [x] Set `version` → `2.0.0`
+- [x] Switch `@dhruv-m-patel/eslint-config-base` devDep → `@dhruv-m-patel/eslint-config-core@workspace:^`
+- [x] Verify `tsconfig.{cjs,esm}.json` reference our `tsconfig.base.json` correctly
 
 ### Changeset
 
-- [ ] `.changeset/express-app-v2.md`: major bump → `2.0.0`. Note: drops Swagger 2 validator (`swagger-express-validator` removed); OpenAPI 3 only. Drops `useBabel` flag.
+- [x] `.changeset/express-app-v2.md`: major bump → `2.0.0`. Note: drops Swagger 2 validator (`swagger-express-validator` removed); OpenAPI 3 only. Drops `useBabel` flag.
 
 ### Verify
 
-- [ ] `yarn workspace @dhruv-m-patel/express-app run typecheck`
-- [ ] `yarn workspace @dhruv-m-patel/express-app run build` produces `build/cjs/` + `build/esm/` with `.d.ts` in both
-- [ ] `yarn workspace @dhruv-m-patel/express-app run test` Vitest green
-- [ ] Manual smoke: tiny consumer importing via `require()` and via `import` to confirm `exports` map
+- [x] `yarn workspace @dhruv-m-patel/express-app run typecheck`
+- [x] `yarn workspace @dhruv-m-patel/express-app run build` produces `build/cjs/` + `build/esm/` with `.d.ts` in both
+- [x] `yarn workspace @dhruv-m-patel/express-app run test` Vitest green
+- [x] Manual smoke: tiny consumer importing via `require()` and via `import` to confirm `exports` map
 
 🔖 **CHECKPOINT 4 — COMMIT NOW**
 

@@ -1,54 +1,75 @@
 # @dhruv-m-patel/express-app
 
-A package to spin up a REST api server with express including swagger docs and health checks by default
+A reusable Express server package providing pre-configured middleware for health checks, request tracing, error handling, and optional OpenAPI validation with Swagger UI.
 
-![CI Status](https://github.com/dhruv-m-patel/packages/workflows/build/badge.svg)
+## Tech Stack
 
-Built with express and typescript providing following features:
+- **Express** with TypeScript
+- **express-openapi-validator** for API spec validation (optional)
+- **swagger-ui-express** for API documentation (optional)
+- **Vitest** for unit tests
+- Dual build: **CJS** + **ESM** outputs
 
-- Configure apps with service discovery through Swagger or OpenAPI specs and enable request-response validations
-- Enables health check by default for an application to provide monitoring capabilities
-- Assigns unique id to each request for providing request traceability
-- Adds final error handler at the end of the app setup to ensure all unhandled route errors are caught and logged
-- Allows running app in clustered startup to leverage full potential of your CPU processes
+## Features
 
-### Using the package
+- **Health check middleware** - `/health` endpoint with configurable checks
+- **Request tracing** - Automatic request ID generation and propagation
+- **Error handling** - Centralized error handler with structured error responses
+- **OpenAPI validation** - Optional request/response validation against an OpenAPI spec
+- **Swagger UI** - Optional interactive API docs at `/api-docs`
+- **Cluster mode** - Optional multi-process server with Node.js cluster
 
-1. Install this package
-   ```bash
-   npm i -S @dhruv-m-patel/express-app
-   # OR
-   yarn add @dhruv-m-pate/express-app
-   ```
+## Usage
 
-2. Update your `app.ts` file (main application file) to export configuration as below:
+```typescript
+import { configureApp, runApp } from '@dhruv-m-patel/express-app';
 
-    ```typescript
-    import path from 'path';
-    import { Application } from 'express';
-    import { configureApp } from '@dhruv-m-patel/express-app';
-
-    const app: Application = configureApp({
-      appName: 'My RESTful API',
-      setup: (expressApp) => {
-        // ...
-        // Your app setup code goes here
-        // ...
-      },
+const app = configureApp({
+  appName: 'my-service',
+  apiSpec: './src/api-spec/bundled.yaml',  // optional
+  routes(app) {
+    app.get('/api/hello', (req, res) => {
+      res.json({ message: 'Hello World' });
     });
+  },
+});
 
-    export default app;
-    ```
+runApp(app, { port: 4000 });
+```
 
-3. Update your `server.ts` or `index.ts` file (the file that starts the server) to run your application like this:
+## API
 
-    ```typescript
-    import app from './app';
-    import { runApp } from '@dhruv-m-patel/express-app';
+### `configureApp(options)`
 
-    const port: number = Number(process.env.PORT) || 5000;
+Creates and configures an Express application with middleware.
 
-    runApp(app, { port });
-    ```
+| Option | Type | Description |
+|--------|------|-------------|
+| `appName` | `string` | Application name for logging and health checks |
+| `routes` | `(app: Express) => void` | Function to register route handlers |
+| `apiSpec` | `string` (optional) | Path to OpenAPI spec file for validation |
 
-For test application examples, please refer to `tests/integration/runTestApp.test.ts`.
+### `runApp(app, options)`
+
+Starts the Express server.
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `port` | `number` | Port to listen on |
+| `enableClusterMode` | `boolean` (optional) | Run with Node.js cluster for multi-process |
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `yarn build` | Build CJS and ESM outputs with TypeScript |
+| `yarn test` | Run Vitest unit tests |
+| `yarn typecheck` | TypeScript type checking |
+
+## Package Exports
+
+The package provides dual CJS/ESM builds:
+
+- **CJS**: `dist/cjs/index.js` (for `require()`)
+- **ESM**: `dist/esm/index.js` (for `import`)
+- **Types**: `dist/esm/index.d.ts`

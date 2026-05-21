@@ -1,116 +1,59 @@
 import cluster from 'cluster';
 import os from 'os';
-import express, {
-  Request as ExpressRequest,
-  Response,
-  NextFunction,
-} from 'express';
+import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import fs from 'fs';
-import * as uuid from 'uuid';
-import SwaggerExpressValidator from 'swagger-express-validator';
-import swaggerUi from 'swagger-ui-express';
-import SwaggerUiDist from 'swagger-ui-dist';
 import * as ExpressOpenApiValidator from 'express-openapi-validator';
-import process from 'process';
-import jsyaml from 'js-yaml';
+import swaggerUi from 'swagger-ui-express';
 import yamljs from 'yamljs';
+import process from 'process';
 
-export interface AppConfigOptions {
-  appName?: string;
-  apiOptions?: {
-    apiSpec: string;
-    specType: 'openapi' | 'swagger';
-    validateResponses?: boolean;
-  };
-  setup?: (app: express.Application) => void | Promise<void>;
-  useBabel?: false;
+import { AppConfigOptions, ApiStartupOptions } from './types.js';
+import {
+  finalErrorHandler,
+  requestTracing,
+  createHealthCheck,
+} from './middleware/index.js';
+
+function isPromise(value?: unknown): value is Promise<void> {
+  return Boolean(value && typeof (value as Promise<void>).then === 'function');
 }
 
-export interface ResponseError extends Error {
-  // OpenAPI validations specify this; other errors do not.
-  status?: number;
-}
-
-export interface Request extends ExpressRequest {
-  id?: string;
-}
-
-function isPromise(value?: any) {
-  return Boolean(value && typeof value.then === 'function');
-}
-
-function finalErrorHandler(
-  err: ResponseError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  if (err) {
-    console.error(err.message, err.stack);
-    res.status(err.status || 500).send({
-      message: err.message || 'Internal server error',
-    });
-  } else {
-    try {
-      next();
-    } catch (error) {
-      console.error((error as Error).message, (error as Error).stack);
-    }
-  }
-}
-
-process.on('exit', (code) => {
-  console.log(`Process ${process.pid} is exiting with exit code ${code}`);
-});
-
-export function configureApp(options: AppConfigOptions): express.Application {
-  const { appName = 'Service', apiOptions, setup, useBabel } = options;
-  // Add support for babel if requested by caller app
-  if (useBabel) {
-    // eslint-disable-next-line global-require
-    require('@babel/register')({
-      root: process.cwd(),
-      ignore: [/node_modules/],
-      only: [process.cwd()],
-    });
-  }
+/**
+ * Configures and returns an Express application with standard middleware,
+ * optional API spec validation, request tracing, health checks, and error handling.
+ */
+export function configureApp(
+  options: AppConfigOptions = {}
+): express.Application {
+  const { appName = 'Service', apiOptions, setup } = options;
 
   const app: express.Application = express();
+
+  // Standard middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cors());
   app.use(compression());
   app.use(cookieParser());
 
-  // Add service discovery to APIs
+  // API spec validation and Swagger UI
   if (apiOptions && apiOptions.apiSpec) {
     const { apiSpec, specType, validateResponses = true } = apiOptions;
 
-    // Provide Swagger UI for consumers to look at API specs
-    app.use(express.static(SwaggerUiDist.getAbsoluteFSPath()));
+    // Swagger UI documentation endpoint
     app.use(
       '/api/docs',
       swaggerUi.serve,
       swaggerUi.setup(yamljs.load(apiSpec))
     );
 
-    // Enforce request-response validations
-    if (specType === 'swagger') {
-      app.use(
-        SwaggerExpressValidator({
-          schema: jsyaml.load(fs.readFileSync(apiSpec, 'utf8')) as string,
-          validateRequest: true,
-          validateResponse: validateResponses,
-          allowNullable: true,
-        })
-      );
-    } else {
+    // Request/response validation
+    if (specType === 'openapi') {
       app.use(
         ExpressOpenApiValidator.middleware({
-          apiSpec: jsyaml.load(fs.readFileSync(apiSpec, 'utf8')) as string,
+          apiSpec,
           validateRequests: true,
           validateResponses,
         })
@@ -118,54 +61,47 @@ export function configureApp(options: AppConfigOptions): express.Application {
     }
   }
 
-  // Add traceability to all requests assigning them a unique identifier
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    if (!req.id) {
-      req.id = uuid.v4();
-    }
-    next();
-  });
+  // Request tracing
+  app.use(requestTracing);
 
-  // Add health check by default on all web and api applications
-  app.get('/health', (req: Request, res: Response) => {
-    res.status(200).send(`${appName} is healthy`);
-  });
+  // Health check endpoint
+  app.get('/health', createHealthCheck(appName));
 
-  // Allow consumer to run their route setup
+  // Consumer route setup
   if (setup && typeof setup === 'function') {
-    if (isPromise(setup)) {
-      setup(app)?.then(() => {
+    const result = setup(app);
+    if (isPromise(result)) {
+      result.then(() => {
         app.use(finalErrorHandler);
       });
       return app;
     }
-    setup(app);
   }
+
+  // Final error handler
   app.use(finalErrorHandler);
   return app;
 }
 
-export interface AppRunOptions {
-  useClusteredStart?: boolean;
-  port?: number;
-  appName?: string;
-  setup?: () => void | Promise<void>;
-  callback?: () => void;
-}
-
+/**
+ * Starts an Express application, optionally using clustered mode
+ * to leverage multiple CPU cores.
+ */
 export function runApp(
   app: express.Application,
-  options: AppRunOptions = {
-    useClusteredStart: false,
-    port: 5000,
-    appName: 'express-app',
-  }
+  options: ApiStartupOptions = {}
 ): void {
-  const { appName, port, useClusteredStart, setup, callback } = options;
+  const {
+    appName = 'express-app',
+    port = 5000,
+    useClusteredStart = false,
+    setup,
+    callback,
+  } = options;
 
   const startApp = () => {
     if (useClusteredStart) {
-      if (cluster.isMaster) {
+      if (cluster.isPrimary) {
         console.log(`Main server process id: ${process.pid}`);
         const cpus = os.cpus();
         console.log(
@@ -195,14 +131,22 @@ export function runApp(
   };
 
   if (setup && typeof setup === 'function') {
-    if (isPromise(setup)) {
-      setup()?.then(() => {
+    const result = setup();
+    if (isPromise(result)) {
+      result.then(() => {
         startApp();
       });
       return;
     }
-    setup();
-  } else {
-    startApp();
   }
+
+  startApp();
 }
+
+// Re-export types and middleware
+export * from './types.js';
+export {
+  finalErrorHandler,
+  requestTracing,
+  createHealthCheck,
+} from './middleware/index.js';

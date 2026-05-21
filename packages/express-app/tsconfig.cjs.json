@@ -1,11 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "rootDir": "./src",
-    "outDir": "./build",
-    "types": ["node"]
+    "outDir": "./build/cjs"
   },
   "include": ["./src"],
   "exclude": ["./tests", "node_modules"]
