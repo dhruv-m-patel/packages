@@ -1,6 +1,6 @@
 {
   "name": "@dhruv-m-patel/web-app",
-  "version": "2.0.0",
+  "version": "1.8.0",
   "description": "Express SSR scaffolding for Vite-powered React apps. Drop-in replacement for the legacy Webpack 4 web-app package.",
   "type": "module",
   "main": "build/cjs/index.js",

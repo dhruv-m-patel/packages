@@ -1,6 +1,6 @@
 {
   "name": "@dhruv-m-patel/eslint-config-web",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "ESLint flat config for React/web projects, extending eslint-config-core",
   "type": "module",
   "main": "./index.js",

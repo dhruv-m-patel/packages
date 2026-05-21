@@ -1,6 +1,6 @@
 {
   "name": "@dhruv-m-patel/eslint-config-core",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Core ESLint flat config for JavaScript and TypeScript projects",
   "type": "module",
   "main": "./index.js",

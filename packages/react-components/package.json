@@ -1,6 +1,6 @@
 {
   "name": "@dhruv-m-patel/react-components",
-  "version": "2.0.0",
+  "version": "1.3.0",
   "description": "A production-grade, themeable React component library with shadcn/ui patterns and Tailwind CSS v4",
   "type": "module",
   "license": "MIT",
