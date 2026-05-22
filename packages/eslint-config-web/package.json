@@ -1,0 +1,36 @@
+{
+  "name": "@dhruv-m-patel/eslint-config-web",
+  "version": "0.0.0",
+  "description": "ESLint flat config for React/web projects, extending eslint-config-core",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "keywords": [
+    "eslint",
+    "eslintconfig",
+    "react",
+    "web",
+    "flat-config"
+  ],
+  "engines": {
+    "node": ">= 22",
+    "yarn": ">= 4"
+  },
+  "author": "Dhruv Patel<https://github.com/dhruv-m-patel>",
+  "license": "MIT",
+  "dependencies": {
+    "@dhruv-m-patel/eslint-config-core": "workspace:^",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^15.14.0"
+  },
+  "peerDependencies": {
+    "eslint": ">= 9"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

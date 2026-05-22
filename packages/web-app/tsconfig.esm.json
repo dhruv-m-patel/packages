@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "outDir": "build/esm"
+  },
+  "include": ["src"],
+  "exclude": ["tests", "node_modules"]
+}

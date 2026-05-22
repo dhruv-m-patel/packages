@@ -8,8 +8,8 @@ import { useRef, useEffect } from 'react';
  * @param value Initial value
  * @returns Last value of the state that was updated
  */
-export default function usePreviousValue(value: any): any {
-  const ref = useRef<any>();
+export default function usePreviousValue<T>(value: T): T | undefined {
+  const ref = useRef<T | undefined>(undefined);
 
   useEffect(() => {
     ref.current = value;

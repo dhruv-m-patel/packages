@@ -1,73 +1,101 @@
 {
   "name": "@dhruv-m-patel/react-components",
   "version": "1.3.0",
-  "description": "A library of react components for frontend projects",
-  "keywords": [
-    "react",
-    "components"
-  ],
-  "main": "build/cjs/index.js",
-  "module": "build/esm/index.js",
-  "types": "build/esm/index.d.ts",
+  "description": "A production-grade, themeable React component library with shadcn/ui patterns and Tailwind CSS v4",
+  "type": "module",
   "license": "MIT",
-  "engines": {
-    "node": ">= 18",
-    "npm": ">= 10",
-    "yarn": ">= 3"
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/styles/theme.css"
   },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir build/cjs",
-    "build": "yarn run build:esm && yarn run build:cjs",
-    "clean": "rimraf build ",
-    "lint:ts": "eslint src/**/*.ts && eslint src/**/*.tsx",
-    "lint:css": "stylelint \"./src/**/*.tsx\"",
-    "lint": "yarn run lint:ts && yarn run lint:css",
-    "lint:fix": "eslint --fix .",
-    "prettier:verify": "prettier --check .",
-    "test": "jest --runInBand",
-    "test:ci": "jest --runInBand --ci --coverage --coverageReporters=text --coverageReporters=text-summary",
-    "test:changed": "jest --runInBand --onlyChanged",
-    "storybook": "start-storybook -p 6789",
-    "build-storybook": "build-storybook"
-  },
-  "dependencies": {
-    "@material-ui/core": "^4.11.2",
-    "@material-ui/icons": "^4.11.2",
-    "clsx": "^1.1.1"
-  },
-  "devDependencies": {
-    "@babel/eslint-parser": "^7.23.10",
-    "@dhruv-m-patel/eslint-config-react": "workspace:^",
-    "@storybook/addon-a11y": "^6.1.11",
-    "@storybook/addon-actions": "^6.1.11",
-    "@storybook/addon-essentials": "^6.1.11",
-    "@storybook/addon-links": "^6.1.11",
-    "@storybook/react": "^6.1.11",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^11.2.2",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^18.14.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "jest": "27.0.5",
-    "jest-canvas-mock": "^2.3.1",
-    "jest-junit": "^12.2.0",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-test-renderer": "^16.14.0",
-    "stylelint": "^15.10.1",
-    "stylelint-config-recommended": "^3.0.0",
-    "stylelint-config-styled-components": "^0.1.1",
-    "stylelint-processor-styled-components": "^1.10.0",
-    "ts-jest": "^27.0.3",
-    "typescript": "4.3.4"
+    "build": "vite build && tsc -p tsconfig.build.json && mkdir -p dist/styles && cp src/styles/theme.css dist/styles/theme.css",
+    "dev": "vite build --watch",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage --reporter=default --reporter=verbose",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "clean": "rimraf dist storybook-static"
   },
   "peerDependencies": {
-    "react": ">= 16.14.0",
-    "react-dom": ">= 16.14.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
-  "publishConfig": {
-    "access": "public"
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@dhruv-m-patel/eslint-config-web": "workspace:^",
+    "@radix-ui/react-accordion": "^1.2.0",
+    "@radix-ui/react-aspect-ratio": "^1.1.0",
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-checkbox": "^1.1.0",
+    "@radix-ui/react-collapsible": "^1.1.0",
+    "@radix-ui/react-context-menu": "^2.2.0",
+    "@radix-ui/react-dialog": "^1.1.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.0",
+    "@radix-ui/react-hover-card": "^1.1.0",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-menubar": "^1.1.0",
+    "@radix-ui/react-popover": "^1.1.0",
+    "@radix-ui/react-progress": "^1.1.0",
+    "@radix-ui/react-radio-group": "^1.2.0",
+    "@radix-ui/react-scroll-area": "^1.1.0",
+    "@radix-ui/react-select": "^2.1.0",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slider": "^1.2.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toggle": "^1.1.0",
+    "@radix-ui/react-toggle-group": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.0",
+    "@storybook/addon-essentials": "^8",
+    "@storybook/addon-interactions": "^8",
+    "@storybook/addon-links": "^8",
+    "@storybook/blocks": "^8",
+    "@storybook/react": "^8",
+    "@storybook/react-vite": "^8",
+    "@storybook/test": "^8",
+    "@tailwindcss/vite": "^4.1.18",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.6.0",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.0.0",
+    "cmdk": "^1.0.0",
+    "jsdom": "^25.0.1",
+    "lucide-react": "^0.564.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-resizable-panels": "^2.0.0",
+    "remark-gfm": "^4.0.1",
+    "rimraf": "^5.0.10",
+    "storybook": "^8",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
   }
 }

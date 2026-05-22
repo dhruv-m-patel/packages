@@ -10,32 +10,39 @@ import useEffectWithDeepCompare from './useEffectWithDeepCompare';
  * error: the error due to api call failure.
  * data: the data result after api call
  */
-export default function useFetch(url: RequestInfo, options?: RequestInit) {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+export default function useFetch<T = unknown>(
+  url: RequestInfo,
+  options?: RequestInit
+) {
+  const [data, setData] = useState<T | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffectWithDeepCompare(() => {
     let isMounted = true;
     setLoading(true);
 
     fetch(url, options)
-      .then((res) => res.json())
+      .then((res) => res.json() as Promise<T>)
       .then((data) => {
         if (isMounted) {
           setData(data);
           setError(null);
         }
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         if (isMounted) {
           setError(error);
           setData(null);
         }
       })
-      .finally(() => isMounted && setLoading(false));
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
 
-    return () => (isMounted = false);
+    return () => {
+      isMounted = false;
+    };
   }, [url, options]);
 
   return { loading, error, data };

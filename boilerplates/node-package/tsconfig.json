@@ -1,15 +1,12 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "baseUrl": "./",
-    "outDir": "./build",
-    "declaration": true,
-    "typeRoots": ["node_modules/@types", "./typings/"],
-    "paths": {
-      "src/*": ["./src/*"]
-    }
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": ["node"]
   },
-  "include": ["./src"],
-  "exclude": ["./tests", "node_modules"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "tests"]
 }

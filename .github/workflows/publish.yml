@@ -15,6 +15,9 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Enable corepack (yarn 4)
+        run: corepack enable
+
       - name: Grant access to package registry
         run: |
           yarn config set npmScopes.dhruv-m-patel.npmRegistryServer "https://registry.npmjs.org"

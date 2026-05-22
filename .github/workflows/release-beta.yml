@@ -1,0 +1,72 @@
+name: release-beta
+
+on:
+  workflow_dispatch:
+    inputs:
+      pre_tag:
+        description: 'Prerelease tag (npm dist-tag). Examples: beta, rc, next.'
+        required: true
+        default: 'beta'
+      enter_pre:
+        description: 'Enter prerelease mode (true) for the first beta of a line of work, or publish a follow-up snapshot (false).'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  release-beta:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Enable corepack (yarn 4)
+        run: corepack enable
+
+      - name: Grant access to package registry
+        run: |
+          yarn config set npmScopes.dhruv-m-patel.npmRegistryServer "https://registry.npmjs.org"
+          yarn config set npmScopes.dhruv-m-patel.npmAlwaysAuth true
+          yarn config set npmScopes.dhruv-m-patel.npmAuthToken $NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
+
+      - name: Install packages
+        run: yarn install --immutable
+
+      - name: Build packages
+        run: yarn ci:build
+
+      - name: Enter prerelease mode
+        if: ${{ inputs.enter_pre == 'true' }}
+        run: yarn changeset pre enter ${{ inputs.pre_tag }}
+
+      - name: Apply pending changesets to package.json versions
+        run: yarn changeset version
+
+      - name: Publish prerelease to npm
+        run: yarn workspaces foreach -A --no-private --from '@dhruv-m-patel/*' npm publish --access public --tag ${{ inputs.pre_tag }} --tolerate-republish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag prerelease commit
+        run: yarn changeset tag
+
+      - name: Push version + tag commits
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore(release): prerelease ${{ inputs.pre_tag }} via release-beta workflow'
+          push_options: '--follow-tags'

@@ -1,6 +1,19 @@
-import configureApp from './configureApp';
-import runApp from './runApp';
-import getWebpackConfig from './getWebpackConfig';
+import configureApp from './configureApp.js';
+import getViteConfig from './getViteConfig.js';
+import runApp from './runApp.js';
 
-export { configureApp, runApp, getWebpackConfig };
-export * from './types';
+export { configureApp, getViteConfig, runApp };
+export default configureApp;
+
+export {
+  createHealthCheck,
+  finalErrorHandler,
+  requestTracing,
+} from './middleware/index.js';
+
+export type {
+  ExtendedRequest,
+  RunOptions,
+  ViteConfigOptions,
+  WebAppOptions,
+} from './types.js';

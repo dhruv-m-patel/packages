@@ -1,6 +1,8 @@
 node_modules
 build/
 build-static/
+dist/
+storybook-static/
 coverage/
 .env
 .DS_Store
@@ -15,3 +17,7 @@ coverage/
 
 *.tsbuildinfo
 .eslintcache
+.turbo/
+
+# Personal reference notes — not checked in.
+/docs/OIDC_PUBLISHING.md

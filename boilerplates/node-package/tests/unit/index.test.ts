@@ -1,8 +1,9 @@
-import sayHello from '../../src';
+import { describe, it, expect, vi } from 'vitest';
+import sayHello from '../../src/index.js';
 
 describe('Unit test: index', () => {
-  test('sayHello should print a message', () => {
-    const spy = jest.spyOn(global.console, 'info').mockImplementation();
+  it('sayHello should print a message', () => {
+    const spy = vi.spyOn(global.console, 'info').mockImplementation(() => {});
 
     sayHello();
 
@@ -10,8 +11,8 @@ describe('Unit test: index', () => {
     spy.mockClear();
   });
 
-  test('sayHello should print name in the message', () => {
-    const spy = jest.spyOn(global.console, 'info').mockImplementation();
+  it('sayHello should print name in the message', () => {
+    const spy = vi.spyOn(global.console, 'info').mockImplementation(() => {});
 
     sayHello('John');
 

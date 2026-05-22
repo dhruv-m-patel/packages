@@ -1,53 +1,55 @@
 {
   "name": "@dhruv-m-patel/packages",
   "private": true,
+  "type": "module",
   "engines": {
-    "node": ">= 18",
+    "node": ">= 22",
     "npm": ">= 10",
-    "yarn": ">= 3"
+    "yarn": ">= 4"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",
-    "@babel/eslint-plugin": "^7.23.5",
     "@changesets/cli": "^2.27.1",
-    "@dhruv-m-patel/eslint-config-base": "workspace:^",
-    "@types/node": "^18.14.0",
+    "@dhruv-m-patel/eslint-config-core": "workspace:^",
+    "@types/node": "^22.13.0",
     "cli-glob": "^0.1.0",
     "dotenv": "^16.0.3",
-    "eslint": "^8.56.0",
-    "husky": "^8.0.3",
-    "lerna": "^8.0.2",
-    "lint-staged": "^13.3.0",
-    "prettier": "^2.8.8",
+    "eslint": "^9.18.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.4.2",
     "syncpack": "^9.8.6",
-    "typescript": "4.3.4"
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.3"
   },
   "lint-staged": {
     "**/*": [
-      "prettier --write --ignore-unknown",
-      "eslint ."
+      "prettier --write --ignore-unknown"
+    ],
+    "**/*.{ts,tsx,js,mjs}": [
+      "eslint --no-warn-ignored"
     ]
   },
   "scripts": {
-    "build": "lerna run build --stream",
-    "ci:build": "lerna run build --stream",
-    "ci:test": "lerna run test:ci --stream",
+    "build": "turbo run build",
+    "ci:build": "turbo run build",
+    "ci:test": "turbo run test:ci",
     "ci:lint": "eslint . && yarn prettier:verify",
-    "clean": "lerna clean -y",
-    "diff": "lerna diff",
-    "test": "lerna run test --stream",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
     "lint": "eslint . && yarn prettier:verify",
-    "lint:fix": "lerna run lint:fix --stream",
-    "pretest": "jest --clearCache",
+    "lint:fix": "eslint . --fix && yarn prettier:format",
     "prettier:format": "prettier --write .",
     "prettier:verify": "prettier --check .",
-    "publish": "yarn workspaces foreach --no-private --from '@dhruv-m-patel/*' npm publish --access public && yarn changeset tag",
-    "storybook": "lerna run storybook --stream",
-    "build-storybook": "lerna run build-storybook --stream",
+    "publish": "yarn workspaces foreach -A --no-private --from '@dhruv-m-patel/*' npm publish --access public --tolerate-republish && yarn changeset tag",
+    "storybook": "turbo run storybook",
+    "build-storybook": "turbo run build-storybook",
+    "typecheck": "turbo run typecheck",
     "version": "yarn changeset version"
   },
-  "packageManager": "yarn@3.2.3"
+  "packageManager": "yarn@4.15.0"
 }

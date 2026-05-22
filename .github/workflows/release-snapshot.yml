@@ -1,0 +1,48 @@
+name: release-snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'npm dist-tag for the snapshot (e.g. pr-123, branch-name, canary).'
+        required: true
+        default: 'snapshot'
+
+jobs:
+  release-snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Enable corepack (yarn 4)
+        run: corepack enable
+
+      - name: Grant access to package registry
+        run: |
+          yarn config set npmScopes.dhruv-m-patel.npmRegistryServer "https://registry.npmjs.org"
+          yarn config set npmScopes.dhruv-m-patel.npmAlwaysAuth true
+          yarn config set npmScopes.dhruv-m-patel.npmAuthToken $NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
+
+      - name: Install packages
+        run: yarn install --immutable
+
+      - name: Build packages
+        run: yarn ci:build
+
+      - name: Version snapshot
+        run: yarn changeset version --snapshot ${{ inputs.tag }}
+
+      - name: Publish snapshot to npm
+        run: yarn workspaces foreach -A --no-private --from '@dhruv-m-patel/*' npm publish --access public --tag ${{ inputs.tag }} --tolerate-republish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

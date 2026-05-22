@@ -14,7 +14,6 @@ export interface AppConfigOptions {
 }
 
 export interface ApiError extends Error {
-  // OpenAPI validations specify this; other errors do not.
   status?: number;
 }
 

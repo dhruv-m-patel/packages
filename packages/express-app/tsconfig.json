@@ -1,15 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "rootDir": "./src",
-    "baseUrl": "./",
     "outDir": "./build",
-    "declaration": true,
-    "paths": {
-      "src/*": ["./src/*"]
-    },
-    "typeRoots": ["node_modules/@types", "./typings/"],
-    "types": ["node", "jest", "@types/jest"]
+    "types": ["node"]
   },
   "include": ["./src"],
   "exclude": ["./tests", "node_modules"]

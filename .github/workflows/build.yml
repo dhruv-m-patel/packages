@@ -11,6 +11,9 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Enable corepack (yarn 4)
+        run: corepack enable
+
       - name: Grant access to package registry
         run: |
           yarn config set npmScopes.dhruv-m-patel.npmRegistryServer "https://registry.npmjs.org"
@@ -25,6 +28,9 @@ jobs:
 
       - name: Verify Code formatting
         run: yarn ci:lint
+
+      - name: Typecheck
+        run: yarn turbo run typecheck
 
       - name: Build app
         run: yarn ci:build
