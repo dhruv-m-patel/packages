@@ -12,8 +12,9 @@ import { cn } from '@ui/lib/utils';
  * <Progress value={60} max={100} />
  * ```
  */
-export interface ProgressProps
-  extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
+export interface ProgressProps extends React.ComponentPropsWithoutRef<
+  typeof ProgressPrimitive.Root
+> {
   /**
    * Current value (0-100 by default)
    */

@@ -12,8 +12,9 @@ import { cn } from '@ui/lib/utils';
  * <Slider defaultValue={[50]} max={100} step={1} />
  * ```
  */
-export interface SliderProps
-  extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
+export interface SliderProps extends React.ComponentPropsWithoutRef<
+  typeof SliderPrimitive.Root
+> {
   className?: string;
 }
 

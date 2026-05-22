@@ -48,7 +48,7 @@ export function runApp(app: Application, options: RunOptions = {}): void {
       app.listen(port, () => {
         // eslint-disable-next-line no-console
         console.info(
-          `[runApp] ${appName ?? 'web-app'} listening on port ${port}`,
+          `[runApp] ${appName ?? 'web-app'} listening on port ${port}`
         );
         callback?.();
       });

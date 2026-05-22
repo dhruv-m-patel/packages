@@ -19,7 +19,7 @@ async function ready(app: Application): Promise<Application> {
 describe('configureApp', () => {
   it('responds on /health with the configured appName', async () => {
     const app = await ready(
-      configureApp({ appName: 'test-app', mode: 'production' }),
+      configureApp({ appName: 'test-app', mode: 'production' })
     );
     const res = await request(app).get('/health');
     expect(res.status).toBe(200);
@@ -32,21 +32,18 @@ describe('configureApp', () => {
       configureApp({
         mode: 'production',
         setup: (instance) => {
-          instance.get(
-            '/_probe/id',
-            (req: ExtendedRequest, res: Response) => {
-              captured = req.id;
-              res.json({ id: req.id ?? null });
-            },
-          );
+          instance.get('/_probe/id', (req: ExtendedRequest, res: Response) => {
+            captured = req.id;
+            res.json({ id: req.id ?? null });
+          });
         },
-      }),
+      })
     );
     const res = await request(app).get('/_probe/id');
     expect(res.status).toBe(200);
     expect(typeof res.body.id).toBe('string');
     expect(res.body.id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
     );
     expect(captured).toBe(res.body.id);
   });
@@ -60,10 +57,10 @@ describe('configureApp', () => {
             '/_probe/session',
             (req: SessionRequest, res: Response) => {
               res.json({ hasSession: req.session !== undefined });
-            },
+            }
           );
         },
-      }),
+      })
     );
     const res = await request(app).get('/_probe/session');
     expect(res.status).toBe(200);
@@ -80,10 +77,10 @@ describe('configureApp', () => {
             '/_probe/session',
             (req: SessionRequest, res: Response) => {
               res.json({ hasSession: req.session !== undefined });
-            },
+            }
           );
         },
-      }),
+      })
     );
     const res = await request(app).get('/_probe/session');
     expect(res.status).toBe(200);
@@ -98,17 +95,12 @@ describe('configureApp', () => {
         setup: (instance) => {
           // Swallow logs from the default error handler so the test stays quiet.
           instance.use(
-            (
-              err: Error,
-              _req: Request,
-              res: Response,
-              _next: NextFunction,
-            ) => {
+            (err: Error, _req: Request, res: Response, _next: NextFunction) => {
               res.status(500).json({ message: err.message });
-            },
+            }
           );
         },
-      }),
+      })
     );
     const res = await request(app).get('/some/page');
     expect(res.status).toBe(500);

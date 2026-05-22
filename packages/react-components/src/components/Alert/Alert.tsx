@@ -31,7 +31,8 @@ const alertVariants = cva(
  * ```
  */
 export interface AlertProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof alertVariants> {
   /**
    * Optional icon to display in the alert

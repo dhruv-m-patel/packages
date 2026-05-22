@@ -51,8 +51,7 @@ export type BreadcrumbItemProps = React.ComponentPropsWithoutRef<'li'>;
  * <BreadcrumbLink href="/products">Products</BreadcrumbLink>
  * ```
  */
-export interface BreadcrumbLinkProps
-  extends React.ComponentPropsWithoutRef<'a'> {
+export interface BreadcrumbLinkProps extends React.ComponentPropsWithoutRef<'a'> {
   asChild?: boolean;
 }
 

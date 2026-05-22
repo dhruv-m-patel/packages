@@ -25,7 +25,7 @@ import type { WebAppOptions } from './types.js';
 interface SsrEntryModule {
   render: (
     url: string,
-    opts?: Record<string, unknown>,
+    opts?: Record<string, unknown>
   ) => Promise<{ html: string; head?: string }>;
 }
 
@@ -42,7 +42,7 @@ async function readTemplate(templatePath: string): Promise<string> {
 function injectTemplate(
   template: string,
   appHtml: string,
-  appHead: string,
+  appHead: string
 ): string {
   return template
     .replace('<!--app-head-->', appHead)
@@ -97,7 +97,7 @@ export function configureApp(options: WebAppOptions = {}): Application {
           httpOnly: true,
           maxAge: 3600000,
         },
-      }),
+      })
     );
   }
 
@@ -133,13 +133,13 @@ export function configureApp(options: WebAppOptions = {}): Application {
           const rawTemplate = await readTemplate(templatePath);
           const template = await viteServer.transformIndexHtml(
             req.originalUrl,
-            rawTemplate,
+            rawTemplate
           );
           const mod = (await viteServer.ssrLoadModule(
-            serverEntryPath,
+            serverEntryPath
           )) as SsrEntryModule;
           const { html: appHtml, head: appHead = '' } = await mod.render(
-            req.originalUrl,
+            req.originalUrl
           );
           const html = injectTemplate(template, appHtml, appHead);
           res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
@@ -156,7 +156,7 @@ export function configureApp(options: WebAppOptions = {}): Application {
         clientRoot,
         'dist',
         'server',
-        'entry-server.js',
+        'entry-server.js'
       );
       const templatePath = path.join(clientDist, 'index.html');
 
@@ -172,7 +172,7 @@ export function configureApp(options: WebAppOptions = {}): Application {
             pathToFileURL(serverBundle).href
           )) as SsrEntryModule;
           const { html: appHtml, head: appHead = '' } = await mod.render(
-            req.originalUrl,
+            req.originalUrl
           );
           const html = injectTemplate(template, appHtml, appHead);
           res.status(200).set({ 'Content-Type': 'text/html' }).end(html);

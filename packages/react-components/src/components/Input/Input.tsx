@@ -11,8 +11,7 @@ import { cn } from '@ui/lib/utils';
  * <Input disabled value="Read only" />
  * ```
  */
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /**
    * Display error state with destructive border and aria-invalid
    */

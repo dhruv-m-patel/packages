@@ -26,14 +26,14 @@ function ToastDemo({
               variant === 'destructive'
                 ? 'Error'
                 : variant === 'success'
-                ? 'Success'
-                : 'Notification',
+                  ? 'Success'
+                  : 'Notification',
             description:
               variant === 'destructive'
                 ? 'There was a problem with your request.'
                 : variant === 'success'
-                ? 'Your action was completed successfully.'
-                : 'This is a notification message.',
+                  ? 'Your action was completed successfully.'
+                  : 'This is a notification message.',
             variant: variant || 'default',
           });
         }}

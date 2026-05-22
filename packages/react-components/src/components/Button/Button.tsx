@@ -45,7 +45,8 @@ const buttonVariants = cva(
  * ```
  */
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   /**
    * Render as a child element (using Radix Slot)

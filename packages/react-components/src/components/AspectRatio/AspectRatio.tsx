@@ -11,8 +11,9 @@ import { cn } from '@ui/lib/utils';
  *   <img src="..." alt="..." className="object-cover" />
  * </AspectRatio>
  */
-export interface AspectRatioProps
-  extends React.ComponentPropsWithoutRef<typeof AspectRatioPrimitive.Root> {
+export interface AspectRatioProps extends React.ComponentPropsWithoutRef<
+  typeof AspectRatioPrimitive.Root
+> {
   /**
    * The desired aspect ratio
    * @default 16/9

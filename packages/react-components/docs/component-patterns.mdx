@@ -181,7 +181,8 @@ Every exported props interface includes JSDoc with `@example` tags:
  * ```
  */
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   /** Render as a child element (using Radix Slot) */
   asChild?: boolean;

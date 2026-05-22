@@ -9,7 +9,7 @@ import type { ExtendedRequest } from '../types.js';
 export function requestTracing(
   req: ExtendedRequest,
   _res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void {
   if (!req.id) {
     req.id = uuid();

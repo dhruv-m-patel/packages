@@ -12,8 +12,9 @@ import { cn } from '@ui/lib/utils';
  * <Separator orientation="vertical" className="h-20" />
  * ```
  */
-export interface SeparatorProps
-  extends React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root> {
+export interface SeparatorProps extends React.ComponentPropsWithoutRef<
+  typeof SeparatorPrimitive.Root
+> {
   /**
    * The orientation of the separator
    * @default "horizontal"

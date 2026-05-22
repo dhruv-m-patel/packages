@@ -53,8 +53,7 @@ export type PaginationItemProps = React.ComponentPropsWithoutRef<'li'>;
  * <PaginationLink href="#" isActive>1</PaginationLink>
  * ```
  */
-export interface PaginationLinkProps
-  extends React.ComponentPropsWithoutRef<'a'> {
+export interface PaginationLinkProps extends React.ComponentPropsWithoutRef<'a'> {
   isActive?: boolean;
 }
 

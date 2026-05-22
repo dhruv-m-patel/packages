@@ -178,8 +178,7 @@ FlexGridRoot.displayName = 'FlexGrid';
  *   Column content
  * </FlexGrid.Column>
  */
-export interface FlexGridColumnProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface FlexGridColumnProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Column span for mobile (required)
    */

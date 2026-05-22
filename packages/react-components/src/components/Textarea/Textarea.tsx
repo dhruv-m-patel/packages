@@ -11,8 +11,7 @@ import { cn } from '@ui/lib/utils';
  * <Textarea disabled value="Read only text" />
  * ```
  */
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   /**
    * Display error state with destructive border and aria-invalid
    */
