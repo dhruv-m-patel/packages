@@ -42,7 +42,7 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "eslint . && yarn prettier:verify",
-    "lint:fix": "turbo run lint:fix",
+    "lint:fix": "eslint . --fix && yarn prettier:format",
     "prettier:format": "prettier --write .",
     "prettier:verify": "prettier --check .",
     "publish": "yarn workspaces foreach -A --no-private --from '@dhruv-m-patel/*' npm publish --access public --tolerate-republish && yarn changeset tag",

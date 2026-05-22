@@ -29,7 +29,7 @@ export const Default: Story = {
   render: () => (
     <HoverCard>
       <HoverCardTrigger asChild>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        {}
         <a
           href="#"
           className="underline text-primary hover:text-primary/80"
@@ -60,7 +60,7 @@ export const WithAvatar: Story = {
   render: () => (
     <HoverCard>
       <HoverCardTrigger asChild>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        {}
         <a
           href="#"
           className="underline text-primary hover:text-primary/80"
@@ -91,7 +91,7 @@ export const ProductPreview: Story = {
   render: () => (
     <HoverCard>
       <HoverCardTrigger asChild>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        {}
         <a
           href="#"
           className="underline text-primary hover:text-primary/80"
@@ -123,7 +123,7 @@ export const DocumentPreview: Story = {
   render: () => (
     <HoverCard>
       <HoverCardTrigger asChild>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        {}
         <a
           href="#"
           className="underline text-primary hover:text-primary/80"
@@ -202,7 +202,7 @@ export const CustomSide: Story = {
   render: () => (
     <HoverCard>
       <HoverCardTrigger asChild>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        {}
         <a
           href="#"
           className="underline text-primary hover:text-primary/80"
@@ -227,7 +227,7 @@ export const CustomOffset: Story = {
   render: () => (
     <HoverCard>
       <HoverCardTrigger asChild>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+        {}
         <a
           href="#"
           className="underline text-primary hover:text-primary/80"

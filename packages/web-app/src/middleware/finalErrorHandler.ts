@@ -17,12 +17,11 @@ export function finalErrorHandler(
   err: HttpError,
   _req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   _next: NextFunction
 ): void {
   const status = typeof err.status === 'number' ? err.status : 500;
   if (!err.status) {
-    // eslint-disable-next-line no-console
     console.error(err);
   }
   res.status(status).json({ message: err.message });

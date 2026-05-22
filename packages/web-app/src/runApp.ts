@@ -29,7 +29,6 @@ export function runApp(app: Application, options: RunOptions = {}): void {
       cluster.fork();
     }
     cluster.on('exit', (worker) => {
-      // eslint-disable-next-line no-console
       console.warn(`[runApp] worker ${worker.process.pid} exited; respawning`);
       cluster.fork();
     });
@@ -46,14 +45,12 @@ export function runApp(app: Application, options: RunOptions = {}): void {
         await ready;
       }
       app.listen(port, () => {
-        // eslint-disable-next-line no-console
         console.info(
           `[runApp] ${appName ?? 'web-app'} listening on port ${port}`
         );
         callback?.();
       });
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error('[runApp] failed to start:', err);
       process.exit(1);
     }

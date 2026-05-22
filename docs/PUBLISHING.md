@@ -6,12 +6,12 @@ Versioning is **independent per package** and **driven by Changesets**. Each pac
 
 ## Quick reference
 
-| Want to release | Do this | Workflow | Bumps version | npm dist-tag |
-|---|---|---|---|---|
-| Stable patch / minor / major | `yarn changeset` -> commit -> merge to `main` | `publish.yml` (auto on push) | yes (via release PR) | `latest` |
-| Beta / rc / next prerelease | Run `release-beta` workflow with `enter_pre=true` (first time per line) or `false` (follow-ups) | `release-beta.yml` (manual) | yes, suffixed `-beta.N` | configurable (`beta`, `rc`, `next`) |
-| Snapshot from a branch / PR (no version bump) | Run `release-snapshot` workflow | `release-snapshot.yml` (manual) | no (timestamped pseudo-version) | configurable (`snapshot`, `pr-123`) |
-| Single package vs all | Same workflow either way | Changeset markdown decides which packages bump | scoped to changed packages | same |
+| Want to release                               | Do this                                                                                         | Workflow                                       | Bumps version                   | npm dist-tag                        |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------- | ----------------------------------- |
+| Stable patch / minor / major                  | `yarn changeset` -> commit -> merge to `main`                                                   | `publish.yml` (auto on push)                   | yes (via release PR)            | `latest`                            |
+| Beta / rc / next prerelease                   | Run `release-beta` workflow with `enter_pre=true` (first time per line) or `false` (follow-ups) | `release-beta.yml` (manual)                    | yes, suffixed `-beta.N`         | configurable (`beta`, `rc`, `next`) |
+| Snapshot from a branch / PR (no version bump) | Run `release-snapshot` workflow                                                                 | `release-snapshot.yml` (manual)                | no (timestamped pseudo-version) | configurable (`snapshot`, `pr-123`) |
+| Single package vs all                         | Same workflow either way                                                                        | Changeset markdown decides which packages bump | scoped to changed packages      | same                                |
 
 > Triggering a workflow does not skip review. The release-beta and snapshot workflows require `workflow_dispatch` (manual run from the Actions tab).
 
@@ -35,6 +35,7 @@ flowchart TD
 - Config: `.changeset/config.json` (`baseBranch: main`, `access: restricted`).
 - Adding a changeset: `yarn changeset` opens an interactive prompt to choose affected packages and bump kind (`patch`/`minor`/`major`). It writes a markdown file in `.changeset/`.
 - A single changeset can list multiple packages with different bump levels:
+
   ```markdown
   ---
   '@dhruv-m-patel/express-app': minor
@@ -43,6 +44,7 @@ flowchart TD
 
   Adds the new health-check shape and forwards the request id header.
   ```
+
 - A changeset that lists a single package only bumps that package. The release PR will only update that one `package.json`.
 
 ## Stable releases (patch / minor / major) — `latest` dist-tag
@@ -77,10 +79,10 @@ Use when you want consumers to opt in via `npm install @dhruv-m-patel/express-ap
 
 Inputs:
 
-| Input | Default | Meaning |
-|---|---|---|
-| `pre_tag` | `beta` | npm dist-tag (`beta`, `rc`, `next`, ...). |
-| `enter_pre` | `true` | `true` for the first beta in a line of work — runs `yarn changeset pre enter <tag>` to flip the repo into prerelease mode. `false` for every follow-up beta — uses the existing prerelease state. |
+| Input       | Default | Meaning                                                                                                                                                                                           |
+| ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pre_tag`   | `beta`  | npm dist-tag (`beta`, `rc`, `next`, ...).                                                                                                                                                         |
+| `enter_pre` | `true`  | `true` for the first beta in a line of work — runs `yarn changeset pre enter <tag>` to flip the repo into prerelease mode. `false` for every follow-up beta — uses the existing prerelease state. |
 
 Workflow shape:
 
@@ -122,6 +124,7 @@ yarn changeset pre exit
 git commit -am "chore(release): exit prerelease mode"
 git push
 ```
+
 On the next merge to `main`, the standard `publish.yml` flow opens a stable Version Packages PR.
 
 Manual local equivalent (rare — prefer the CI workflow):
@@ -141,8 +144,8 @@ Use to publish an unversioned preview of the current branch state without bumpin
 
 Inputs:
 
-| Input | Default | Meaning |
-|---|---|---|
+| Input | Default    | Meaning                                                                    |
+| ----- | ---------- | -------------------------------------------------------------------------- |
 | `tag` | `snapshot` | npm dist-tag. Common values: `snapshot`, `pr-123`, `canary`, `branch-foo`. |
 
 Workflow shape:
@@ -195,10 +198,10 @@ yarn turbo run lint typecheck build test:ci
 
 ## CI secrets
 
-| Secret | Where it lives | Used by |
-|---|---|---|
-| `NPM_TOKEN` | GitHub repo secrets | `publish.yml`, `release-beta.yml`, `release-snapshot.yml` |
-| `GITHUB_TOKEN` | provided automatically | `publish.yml` (`changesets/action`) |
+| Secret         | Where it lives         | Used by                                                   |
+| -------------- | ---------------------- | --------------------------------------------------------- |
+| `NPM_TOKEN`    | GitHub repo secrets    | `publish.yml`, `release-beta.yml`, `release-snapshot.yml` |
+| `GITHUB_TOKEN` | provided automatically | `publish.yml` (`changesets/action`)                       |
 
 `NPM_TOKEN` must have publish access to the `dhruv-m-patel` scope and 2FA-for-automation enabled.
 
@@ -211,16 +214,16 @@ yarn turbo run lint typecheck build test:ci
 
 ## Changeset cheatsheet
 
-| Command | Purpose |
-|---|---|
-| `yarn changeset` | interactive prompt to add a changeset |
-| `yarn changeset status` | show pending bumps |
-| `yarn changeset version` | apply pending changesets to package.json + CHANGELOG.md |
-| `yarn changeset version --snapshot <tag>` | apply as a snapshot (timestamped) |
-| `yarn changeset pre enter <tag>` | flip into prerelease mode for `<tag>` |
-| `yarn changeset pre exit` | leave prerelease mode (next release goes stable) |
-| `yarn changeset tag` | git-tag the just-published versions |
-| `yarn changeset publish` | (if not using the workflow) publish via Changesets directly |
+| Command                                   | Purpose                                                     |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| `yarn changeset`                          | interactive prompt to add a changeset                       |
+| `yarn changeset status`                   | show pending bumps                                          |
+| `yarn changeset version`                  | apply pending changesets to package.json + CHANGELOG.md     |
+| `yarn changeset version --snapshot <tag>` | apply as a snapshot (timestamped)                           |
+| `yarn changeset pre enter <tag>`          | flip into prerelease mode for `<tag>`                       |
+| `yarn changeset pre exit`                 | leave prerelease mode (next release goes stable)            |
+| `yarn changeset tag`                      | git-tag the just-published versions                         |
+| `yarn changeset publish`                  | (if not using the workflow) publish via Changesets directly |
 
 ## Common situations
 

@@ -53,7 +53,7 @@ describe('HoverCard', () => {
     render(
       <HoverCard open>
         <HoverCardTrigger asChild>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          {}
           <a href="#">@test</a>
         </HoverCardTrigger>
         <HoverCardContent>
@@ -85,7 +85,7 @@ describe('HoverCard', () => {
     render(
       <HoverCard open>
         <HoverCardTrigger asChild>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          {}
           <a href="#">Trigger</a>
         </HoverCardTrigger>
         <HoverCardContent sideOffset={10}>
@@ -102,7 +102,7 @@ describe('HoverCard', () => {
     render(
       <HoverCard open>
         <HoverCardTrigger asChild>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          {}
           <a href="#">Trigger</a>
         </HoverCardTrigger>
         <HoverCardContent className="w-80">
